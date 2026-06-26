@@ -1,0 +1,1530 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>⚔️ Битва — Свиток.Доставка</title>
+    <style>
+        /* === ВСЕ СТИЛИ === */
+        @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Montserrat:wght@300;500;700&display=swap');
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background-color: #0c0a0a;
+            background-image: radial-gradient(circle at 10% 20%, #1a1410 0%, #080606 90%);
+            color: #e4dac7;
+            min-height: 100vh;
+            padding: 20px;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        #particles-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        .wrapper {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 25px;
+            background: rgba(20, 15, 12, 0.6);
+            backdrop-filter: blur(3px);
+            border-radius: 48px;
+            border: 1px solid rgba(200, 170, 120, 0.15);
+            box-shadow: 0 20px 80px rgba(0, 0, 0, 0.8);
+            position: relative;
+            z-index: 10;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 20px;
+            border-bottom: 1px solid rgba(200, 170, 120, 0.15);
+            padding-bottom: 15px;
+        }
+
+        .logo {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.8rem;
+            font-weight: 600;
+            letter-spacing: 4px;
+            color: #f3e5c8;
+            text-decoration: none;
+        }
+        .logo span { color: #b89a7a; }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .money {
+            background: rgba(212, 175, 55, 0.08);
+            padding: 6px 16px;
+            border-radius: 40px;
+            border: 1px solid rgba(212, 175, 55, 0.15);
+            color: #d4af37;
+            font-weight: 700;
+            font-size: 0.95rem;
+        }
+        .money::before { content: "🪙 "; }
+
+        .btn-back {
+            padding: 6px 14px;
+            border-radius: 40px;
+            border: 1px solid rgba(200, 170, 120, 0.2);
+            background: rgba(255, 215, 150, 0.03);
+            color: #b3a390;
+            text-decoration: none;
+            font-size: 0.65rem;
+            letter-spacing: 2px;
+            transition: all 0.3s;
+        }
+        .btn-back:hover {
+            background: rgba(212, 175, 55, 0.12);
+            border-color: rgba(212, 175, 55, 0.4);
+            color: #d4af37;
+        }
+
+        .btn-book {
+            padding: 6px 14px;
+            border-radius: 40px;
+            border: 1px solid rgba(200, 150, 255, 0.2);
+            background: rgba(200, 150, 255, 0.05);
+            color: #b89ad4;
+            text-decoration: none;
+            font-size: 0.65rem;
+            letter-spacing: 2px;
+            transition: all 0.3s;
+        }
+        .btn-book:hover {
+            background: rgba(200, 150, 255, 0.12);
+            border-color: rgba(200, 150, 255, 0.4);
+            color: #d4b0f0;
+        }
+
+        .page-title {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 2.2rem;
+            text-align: center;
+            margin-bottom: 6px;
+            color: #efe6d3;
+        }
+        .page-title small {
+            display: block;
+            font-size: 0.9rem;
+            color: #7f7364;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 300;
+            letter-spacing: 2px;
+        }
+
+        .game-area {
+            background: rgba(0,0,0,0.4);
+            border-radius: 32px;
+            padding: 20px;
+            border: 2px solid rgba(200, 170, 120, 0.08);
+            margin: 15px 0;
+            position: relative;
+        }
+
+        #gameCanvas {
+            width: 100%;
+            height: 500px;
+            background: radial-gradient(ellipse at center, #1a1410 0%, #0a0808 100%);
+            border-radius: 24px;
+            border: 1px solid rgba(200, 170, 120, 0.1);
+            display: block;
+            touch-action: none;
+            cursor: crosshair;
+        }
+
+        .game-controls {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin: 12px 0;
+        }
+
+        .game-controls .btn-game {
+            padding: 10px 22px;
+            border-radius: 60px;
+            border: 1px solid rgba(200, 170, 120, 0.2);
+            background: rgba(255, 215, 150, 0.03);
+            color: #b3a390;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 600;
+            font-size: 0.75rem;
+            letter-spacing: 2px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .game-controls .btn-game:hover {
+            background: rgba(212, 175, 55, 0.08);
+            border-color: rgba(212, 175, 55, 0.3);
+            color: #d4af37;
+            transform: translateY(-2px);
+        }
+
+        .game-stats {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+            margin: 10px 0;
+            font-size: 0.85rem;
+            color: #9a8a78;
+        }
+        .game-stats span {
+            color: #f0e4d0;
+            font-weight: 700;
+        }
+
+        .message {
+            text-align: center;
+            padding: 10px;
+            border-radius: 40px;
+            margin: 8px 0;
+            display: none;
+        }
+        .message.success { display: block; background: rgba(100, 200, 100, 0.08); border: 1px solid rgba(100, 200, 100, 0.2); color: #7bc77b; }
+        .message.error { display: block; background: rgba(200, 80, 60, 0.08); border: 1px solid rgba(200, 80, 60, 0.15); color: #c47a6a; }
+        .message.info { display: block; background: rgba(212, 175, 55, 0.08); border: 1px solid rgba(212, 175, 55, 0.15); color: #d4af37; }
+
+        .shop-panel {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin: 10px 0;
+            padding: 12px;
+            background: rgba(0,0,0,0.2);
+            border-radius: 20px;
+        }
+        .shop-panel .btn-shop {
+            padding: 8px 18px;
+            border-radius: 40px;
+            border: 1px solid rgba(212, 175, 55, 0.2);
+            background: rgba(212, 175, 55, 0.05);
+            color: #d4af37;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 600;
+            font-size: 0.7rem;
+            letter-spacing: 1px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .shop-panel .btn-shop:hover {
+            background: rgba(212, 175, 55, 0.12);
+            border-color: rgba(212, 175, 55, 0.4);
+            transform: scale(1.02);
+        }
+        .shop-panel .btn-shop:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .inventory-section {
+            margin-top: 20px;
+            padding-top: 18px;
+            border-top: 1px solid rgba(200, 170, 120, 0.1);
+        }
+        .inventory-section h3 {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.4rem;
+            color: #d4c4ae;
+            margin-bottom: 10px;
+        }
+        .inventory-items {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        .inv-tag {
+            background: rgba(212, 175, 55, 0.08);
+            border: 1px solid rgba(212, 175, 55, 0.12);
+            padding: 4px 12px;
+            border-radius: 40px;
+            font-size: 0.75rem;
+            color: #d4af37;
+        }
+        .inv-tag.scroll {
+            background: rgba(200, 150, 255, 0.08);
+            border-color: rgba(200, 150, 255, 0.15);
+            color: #b89ad4;
+        }
+
+        .mobile-controls {
+            display: none;
+            justify-content: center;
+            gap: 10px;
+            margin: 10px 0;
+        }
+        .mobile-controls .arrow-grid {
+            display: grid;
+            grid-template-columns: 60px 60px 60px;
+            grid-template-rows: 60px 60px;
+            gap: 5px;
+        }
+        .mobile-controls .arrow-grid button {
+            border-radius: 50%;
+            border: 2px solid rgba(200, 170, 120, 0.2);
+            background: rgba(255, 215, 150, 0.05);
+            color: #d4af37;
+            font-size: 1.5rem;
+            cursor: pointer;
+            touch-action: none;
+            user-select: none;
+        }
+        .mobile-controls .arrow-grid button:active {
+            background: rgba(212, 175, 55, 0.15);
+        }
+        .mobile-controls .arrow-grid button:nth-child(1) { grid-column: 2; grid-row: 1; }
+        .mobile-controls .arrow-grid button:nth-child(2) { grid-column: 1; grid-row: 2; }
+        .mobile-controls .arrow-grid button:nth-child(3) { grid-column: 2; grid-row: 2; }
+        .mobile-controls .arrow-grid button:nth-child(4) { grid-column: 3; grid-row: 2; }
+
+        .attack-btn {
+            padding: 15px 40px;
+            border-radius: 60px;
+            border: 2px solid #e89080;
+            background: linear-gradient(145deg, #2a1a1a, #1a0a0a);
+            color: #e89080;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 700;
+            font-size: 1.2rem;
+            letter-spacing: 3px;
+            cursor: pointer;
+            transition: all 0.3s;
+            touch-action: none;
+        }
+        .attack-btn:hover:not(:disabled) {
+            background: linear-gradient(145deg, #3a2a2a, #2a1a1a);
+            box-shadow: 0 0 40px rgba(255, 100, 100, 0.1);
+            transform: scale(1.05);
+        }
+        .attack-btn:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .pet-display {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            font-size: 2rem;
+            filter: drop-shadow(0 0 20px rgba(212, 175, 55, 0.2));
+            animation: petFloat 3s infinite ease-in-out;
+            pointer-events: none;
+            z-index: 5;
+        }
+        @keyframes petFloat {
+            0%, 100% { transform: translateY(0) scale(1); }
+            50% { transform: translateY(-10px) scale(1.05); }
+        }
+
+        @media (max-width: 700px) {
+            .wrapper { padding: 15px; border-radius: 32px; }
+            #gameCanvas { height: 350px; }
+            .header { flex-direction: column; align-items: flex-start; }
+            .header-right { width: 100%; justify-content: space-between; }
+            .game-controls .btn-game { padding: 8px 14px; font-size: 0.65rem; }
+            .mobile-controls { display: flex; }
+            .attack-btn { padding: 12px 25px; font-size: 1rem; }
+            .shop-panel .btn-shop { font-size: 0.6rem; padding: 6px 12px; }
+            .pet-display { font-size: 1.5rem; bottom: 10px; left: 10px; }
+        }
+    </style>
+</head>
+<body>
+
+    <canvas id="particles-canvas"></canvas>
+
+    <div class="wrapper">
+        <header class="header">
+            <a href="index.html" class="logo">⚔️ Свиток <span>битва</span></a>
+            <div class="header-right">
+                <span class="money" id="moneyDisplay">4 000</span>
+                <span style="color:#7bc77b; font-size:0.8rem;" id="skinDisplay">🧙</span>
+                <span style="color:#b89ad4; font-size:0.8rem;" id="petDisplay"></span>
+                <a href="book.html" class="btn-book">📖 Книга истории</a>
+                <a href="index.html" class="btn-back">← Главная</a>
+                <a href="shop.html" class="btn-back" style="border-color:rgba(212,175,55,0.2); color:#d4af37;">🛒 Магазин</a>
+            </div>
+        </header>
+
+        <h1 class="page-title">
+            ⚔️ Арена магов
+            <small>Стрелки ↑↓←→ | ПРОБЕЛ атака | Собирай свитки истории!</small>
+        </h1>
+
+        <div id="message" class="message"></div>
+
+        <div class="game-area">
+            <canvas id="gameCanvas" width="1000" height="500"></canvas>
+            <div class="pet-display" id="petDisplayGame"></div>
+
+            <div class="game-stats">
+                <div>❤️ HP: <span id="hpDisplay">100</span></div>
+                <div>⚔️ Убито: <span id="killDisplay">0</span></div>
+                <div>💰 Монеты: <span id="coinDisplay">0</span></div>
+                <div id="waveDisplay" style="color:#d4af37;">🌊 Волна: <span id="waveNum">1</span>/5</div>
+                <div>⚡ Посох: <span id="staffLevel">1</span> ур.</div>
+                <div style="color:#b89ad4;">📜 Свитков: <span id="scrollCount">0</span></div>
+            </div>
+
+            <div class="game-controls">
+                <button class="btn-game" id="startBtn" style="border-color:#7bc77b; color:#7bc77b;">▶️ Начать</button>
+                <button class="btn-game" id="pauseBtn">⏸️ Пауза</button>
+                <button class="btn-game" id="resetBtn">🔄 Сброс</button>
+                <button class="attack-btn" id="attackBtn">⚔️ АТАКА!</button>
+            </div>
+
+            <div class="shop-panel">
+                <span style="color:#7f7364; font-size:0.8rem;">💎 Прокачка:</span>
+                <button class="btn-shop" id="upgradeStaff">⬆️ Посох (50 ₽)</button>
+                <button class="btn-shop" id="healBtn">💚 Лечение (30 ₽)</button>
+            </div>
+
+            <div class="mobile-controls">
+                <div class="arrow-grid">
+                    <button data-dir="up">⬆️</button>
+                    <button data-dir="left">⬅️</button>
+                    <button data-dir="down">⬇️</button>
+                    <button data-dir="right">➡️</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="inventory-section">
+            <h3>📦 Награды</h3>
+            <div class="inventory-items" id="inventoryItems">
+                <span class="inv-tag" style="color:#7f7364;">Пока ничего</span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ============================================
+        // БИТВА + СВИТКИ + СКИНЫ + ПИТОМЦЫ
+        // ============================================
+
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+
+        const W = 1000;
+        const H = 500;
+        canvas.width = W;
+        canvas.height = H;
+
+        // --- СКИНЫ И ПИТОМЦЫ ---
+        const ownedSkins = JSON.parse(localStorage.getItem('ownedSkins')) || [];
+        const ownedPets = JSON.parse(localStorage.getItem('ownedPets')) || [];
+        let activeSkin = localStorage.getItem('activeSkin') || null;
+        let activePet = localStorage.getItem('activePet') || null;
+
+        const skinsMap = {
+            'vampire': { icon: '🧛', name: 'Вампир', bonus: 'heal' },
+            'elf': { icon: '🧝', name: 'Эльф', bonus: 'speed' },
+            'demon': { icon: '👹', name: 'Демон', bonus: 'range' },
+            'cybermage': { icon: '🤖', name: 'Кибермаг', bonus: 'damage' }
+        };
+
+        const petsMap = {
+            'wolf': { icon: '🐺', name: 'Волк', bonus: 'speed', value: 5 },
+            'owl': { icon: '🦉', name: 'Сова', bonus: 'slow', value: 0.8 },
+            'dragon': { icon: '🐉', name: 'Дракончик', bonus: 'attack', value: 6 },
+            'fairy': { icon: '🧚', name: 'Фея', bonus: 'shield', value: 2 }
+        };
+
+        function getSkinBonus() {
+            if (!activeSkin || !skinsMap[activeSkin]) return null;
+            return skinsMap[activeSkin].bonus;
+        }
+
+        function getPetBonus() {
+            if (!activePet || !petsMap[activePet]) return null;
+            return petsMap[activePet];
+        }
+
+        // --- Состояние ---
+        let gameRunning = false;
+        let gamePaused = false;
+        let gameOver = false;
+        let gameWin = false;
+
+        let player = {
+            x: 500,
+            y: 250,
+            radius: 18,
+            hp: 100,
+            maxHp: 100,
+            speed: 4,
+            invincible: 0,
+            kills: 0,
+            coins: 0,
+            scrolls: 0
+        };
+
+        let petBonus = getPetBonus();
+        if (petBonus && petBonus.bonus === 'speed') {
+            player.speed += petBonus.value;
+        }
+
+        let staffLevel = 1;
+        let staffDamage = 15;
+        let staffRange = 100;
+
+        let enemies = [];
+        let enemySpawnTimer = 0;
+        let maxEnemies = 12;
+        let wave = 1;
+        const MAX_WAVE = 5;
+        let enemiesPerWave = 5;
+        let enemiesSpawned = 0;
+        let bossSpawned = false;
+        let bossDefeated = false;
+
+        let coins = [];
+        let coinTimer = 0;
+
+        // --- СВИТКИ ---
+        let scrolls = [];
+        let scrollTimer = 0;
+        const SCROLL_INTERVAL = 60 * 60; // 60 секунд
+        const SCROLL_LIFETIME = 5 * 60; // 5 секунд
+
+        let attackCooldown = 0;
+        let attackActive = false;
+        let attackTimer = 0;
+        let attackAngle = 0;
+        let attackParticles = [];
+
+        let keys = { left: false, right: false, up: false, down: false };
+
+        let skinBonus = getSkinBonus();
+        let fairyShieldActive = false;
+        let fairyShieldTimer = 0;
+        let fairyShieldCooldown = 0;
+
+        // --- DOM ---
+        const moneyDisplay = document.getElementById('moneyDisplay');
+        const hpDisplay = document.getElementById('hpDisplay');
+        const killDisplay = document.getElementById('killDisplay');
+        const coinDisplay = document.getElementById('coinDisplay');
+        const waveNum = document.getElementById('waveNum');
+        const staffLevelDisplay = document.getElementById('staffLevel');
+        const scrollCountDisplay = document.getElementById('scrollCount');
+        const inventoryItems = document.getElementById('inventoryItems');
+        const messageDiv = document.getElementById('message');
+        const skinDisplay = document.getElementById('skinDisplay');
+        const petDisplay = document.getElementById('petDisplay');
+        const petDisplayGame = document.getElementById('petDisplayGame');
+
+        let money = parseInt(localStorage.getItem('magicMoney')) || 4000;
+        let inventory = JSON.parse(localStorage.getItem('magicInventory')) || [];
+        let collectedScrolls = JSON.parse(localStorage.getItem('collectedScrolls')) || [];
+
+        function updateSkinPetDisplay() {
+            if (activeSkin && skinsMap[activeSkin]) {
+                skinDisplay.textContent = skinsMap[activeSkin].icon;
+            } else {
+                skinDisplay.textContent = '🧙';
+            }
+            if (activePet && petsMap[activePet]) {
+                petDisplay.textContent = petsMap[activePet].icon;
+                petDisplayGame.textContent = petsMap[activePet].icon;
+            } else {
+                petDisplay.textContent = '';
+                petDisplayGame.textContent = '';
+            }
+        }
+        updateSkinPetDisplay();
+
+        function updateMoney() {
+            moneyDisplay.textContent = money.toLocaleString('ru-RU');
+            localStorage.setItem('magicMoney', money.toString());
+        }
+
+        function updateInventory() {
+            localStorage.setItem('magicInventory', JSON.stringify(inventory));
+            localStorage.setItem('collectedScrolls', JSON.stringify(collectedScrolls));
+
+            let items = [...inventory];
+            const scrollItems = collectedScrolls.map(s => ({
+                icon: '📜',
+                name: s.title || 'Древний свиток',
+                isScroll: true
+            }));
+
+            const allItems = [...items, ...scrollItems];
+
+            if (allItems.length === 0) {
+                inventoryItems.innerHTML = '<span class="inv-tag" style="color:#7f7364;">Пока ничего</span>';
+            } else {
+                inventoryItems.innerHTML = allItems.map(item => {
+                    const cls = item.isScroll ? 'inv-tag scroll' : 'inv-tag';
+                    return `<span class="${cls}">${item.icon} ${item.name}</span>`;
+                }).join('');
+            }
+
+            scrollCountDisplay.textContent = collectedScrolls.length;
+        }
+
+        function showMessage(text, type = 'success') {
+            messageDiv.textContent = text;
+            messageDiv.className = `message ${type}`;
+            messageDiv.style.display = 'block';
+            setTimeout(() => { messageDiv.style.display = 'none'; }, 3000);
+        }
+
+        function updateUI() {
+            hpDisplay.textContent = Math.max(0, Math.round(player.hp));
+            killDisplay.textContent = player.kills;
+            coinDisplay.textContent = player.coins;
+            waveNum.textContent = wave;
+            staffLevelDisplay.textContent = staffLevel;
+            scrollCountDisplay.textContent = collectedScrolls.length;
+        }
+
+        // --- ТЕКСТЫ СВИТКОВ ---
+        const scrollTexts = [
+            { title: 'Основание Боровичей', text: 'В древние времена, когда леса были гуще, а магия сильнее, на берегах реки Мсты появились первые поселения. Местные шаманы чувствовали силу этого места.' },
+            { title: 'Великий маг Игорь', text: 'Маг Игорь был первым, кто объедини разрозненные племена Боровичей. Он использовал древнюю магию земли и воды, чтобы защитить город от врагов.' },
+            { title: 'Тайна Никольской церкви', text: 'Под Никольской церковью скрыты древние катакомбы. Говорят, там хранится артефакт, способный управлять временем. Многие искали его, но никто не вернулся.' },
+            { title: 'Легенда о каменном драконе', text: 'В окрестностях Боровичей есть скала, напоминающая дракона. Легенда гласит, что это окаменевший страж, охраняющий вход в подземный мир.' },
+            { title: 'Магический лес', text: 'Лес вокруг Боровичей полон магии. Деревья здесь помнят древние заклинания, а грибы светятся в темноте. Говорят, что в полночь можно услышать голоса предков.' },
+            { title: 'Проклятие озера', text: 'Озеро Ильмень хранит тайну. В древности здесь утонула ведьма, и с тех пор в полнолуние над водой появляется туман, в котором можно увидеть её призрак.' },
+            { title: 'Союз с друидами', text: 'Маги Боровичей заключили союз с друидами из соседних лесов. Вместе они создали защитный купол, который оберегает город от тёмных сил.' },
+            { title: 'Магическая школа', text: 'В Боровичах была открыта первая школа магии. Ученики изучали древние руны, траволечение и искусство предсказания. Многие выпускники стали великими магами.' },
+            { title: 'Кузница артефактов', text: 'В старой кузнице на окраине города ковали легендарные артефакты. Говорят, что там был создан посох, который мог управлять стихиями.' },
+            { title: 'Последнее пророчество', text: 'Древнее пророчество гласит: когда наступит время великой тьмы, маг, собравший все свитки, сможет открыть портал в прошлое и спасти Боровичи.' }
+        ];
+
+        // --- СПАВН СВИТКА ---
+        function spawnScroll() {
+            const x = 50 + Math.random() * (W - 100);
+            const y = 50 + Math.random() * (H - 100);
+
+            const scrollData = scrollTexts[Math.floor(Math.random() * scrollTexts.length)];
+
+            scrolls.push({
+                x, y,
+                radius: 18,
+                title: scrollData.title,
+                text: scrollData.text,
+                life: SCROLL_LIFETIME,
+                pulse: 0,
+                collected: false
+            });
+
+            showMessage(`📜 Появился свиток "${scrollData.title}"!`, 'info');
+        }
+
+        // --- СПАВН ВРАГОВ ---
+        function spawnEnemy() {
+            if (enemies.length >= maxEnemies) return;
+
+            const side = Math.floor(Math.random() * 4);
+            let x, y;
+            switch(side) {
+                case 0: x = -30; y = 30 + Math.random() * (H - 60); break;
+                case 1: x = W + 30; y = 30 + Math.random() * (H - 60); break;
+                case 2: x = 30 + Math.random() * (W - 60); y = -30; break;
+                case 3: x = 30 + Math.random() * (W - 60); y = H + 30; break;
+            }
+
+            const hpBonus = wave * 8;
+            const speedBonus = 0.15 * (wave - 1);
+            const dmgBonus = Math.floor(wave / 2);
+
+            let type, color, radius, hp, speed, damage, reward;
+
+            if (wave === MAX_WAVE && !bossSpawned && enemiesSpawned >= enemiesPerWave) {
+                bossSpawned = true;
+                type = 'boss';
+                color = '#8B0000';
+                radius = 50;
+                hp = 120 + wave * 20;
+                speed = 1.5 + wave * 0.05;
+                damage = 25 + wave * 3;
+                reward = 200 + wave * 50;
+                showMessage(`🐲 БОСС-ДРАКОН появился! Убей его!`, 'info');
+            } else {
+                const r = Math.random();
+                if (r < 0.35) {
+                    type = 'troll'; color = '#5A7A5A'; radius = 20; hp = 20 + hpBonus; speed = 1.5 + speedBonus; damage = 8 + dmgBonus; reward = 20 + wave * 5;
+                } else if (r < 0.65) {
+                    type = 'goblin'; color = '#7A6A4A'; radius = 14; hp = 12 + hpBonus; speed = 2.5 + speedBonus; damage = 5 + dmgBonus; reward = 12 + wave * 3;
+                } else {
+                    type = 'golem'; color = '#6A6A6A'; radius = 25; hp = 35 + hpBonus * 1.5; speed = 1 + speedBonus; damage = 12 + dmgBonus * 2; reward = 30 + wave * 8;
+                }
+            }
+
+            enemies.push({
+                x, y, radius, hp, maxHp: hp,
+                speed: Math.min(speed, 4),
+                damage, reward, color, type,
+                hitTimer: 0,
+                state: 'chase'
+            });
+        }
+
+        function spawnCoin() {
+            const x = 30 + Math.random() * (W - 60);
+            const y = 30 + Math.random() * (H - 60);
+            coins.push({ x, y, radius: 10, pulse: 0, alive: true });
+        }
+
+        // --- АТАКА ---
+        function playerAttack() {
+            if (!gameRunning || gamePaused || gameOver || gameWin) return;
+            if (attackCooldown > 0) return;
+
+            attackCooldown = 25;
+            attackActive = true;
+            attackTimer = 18;
+
+            let targetAngle = 0;
+            let minDist = Infinity;
+            let targetFound = false;
+
+            for (const e of enemies) {
+                const dx = e.x - player.x;
+                const dy = e.y - player.y;
+                const dist = Math.sqrt(dx*dx + dy*dy);
+                if (dist < minDist) {
+                    minDist = dist;
+                    targetAngle = Math.atan2(dy, dx);
+                    targetFound = true;
+                }
+            }
+
+            if (!targetFound) {
+                targetAngle = Math.random() * Math.PI * 2;
+            }
+
+            attackAngle = targetAngle;
+
+            for (let i = 0; i < 15; i++) {
+                const angle = targetAngle + (Math.random() - 0.5) * 1.2;
+                const dist = 40 + Math.random() * 80;
+                attackParticles.push({
+                    x: player.x + 20 * Math.cos(targetAngle),
+                    y: player.y + 20 * Math.sin(targetAngle),
+                    vx: Math.cos(angle) * (2 + Math.random() * 3),
+                    vy: Math.sin(angle) * (2 + Math.random() * 3),
+                    life: 30 + Math.random() * 20,
+                    maxLife: 50,
+                    size: 4 + Math.random() * 6,
+                    color: `hsl(${40 + Math.random() * 30}, 100%, ${60 + Math.random() * 30}%)`
+                });
+            }
+
+            let damage = staffDamage + Math.floor(staffLevel * 2);
+            let range = staffRange + staffLevel * 5;
+
+            if (skinBonus === 'damage') {
+                damage = Math.floor(damage * 2);
+                if (Math.random() < 0.1) {
+                    damage = 9999;
+                    showMessage('💥 КИБЕР-УДАР! МГНОВЕННАЯ СМЕРТЬ!', 'info');
+                }
+            }
+
+            if (skinBonus === 'range') {
+                range = Math.floor(range * 1.5);
+            }
+
+            if (petBonus && petBonus.bonus === 'attack') {
+                damage += petBonus.value;
+            }
+
+            for (let i = enemies.length - 1; i >= 0; i--) {
+                const e = enemies[i];
+                const dx = e.x - player.x;
+                const dy = e.y - player.y;
+                const dist = Math.sqrt(dx*dx + dy*dy);
+
+                const angle = Math.atan2(dy, dx);
+                let angleDiff = angle - targetAngle;
+                while (angleDiff > Math.PI) angleDiff -= Math.PI * 2;
+                while (angleDiff < -Math.PI) angleDiff += Math.PI * 2;
+
+                if (dist < range && Math.abs(angleDiff) < 1.3) {
+                    e.hp -= damage;
+                    e.hitTimer = 12;
+
+                    for (let p = 0; p < 8; p++) {
+                        const a = Math.random() * Math.PI * 2;
+                        attackParticles.push({
+                            x: e.x,
+                            y: e.y,
+                            vx: Math.cos(a) * (1 + Math.random() * 4),
+                            vy: Math.sin(a) * (1 + Math.random() * 4),
+                            life: 15 + Math.random() * 15,
+                            maxLife: 30,
+                            size: 2 + Math.random() * 4,
+                            color: '#FFD700'
+                        });
+                    }
+
+                    if (e.hp <= 0) {
+                        const isBoss = e.type === 'boss';
+                        player.kills++;
+                        player.coins += e.reward;
+                        money += e.reward;
+
+                        if (skinBonus === 'heal') {
+                            const healAmount = 5;
+                            player.hp = Math.min(player.maxHp, player.hp + healAmount);
+                            showMessage(`🧛 +${healAmount} HP от вампира!`, 'info');
+                        }
+
+                        if (isBoss) {
+                            bossDefeated = true;
+                            gameWin = true;
+                            gameRunning = false;
+                            if (!inventory.some(item => item.id === 'laser')) {
+                                inventory.push({ id: 'laser', name: 'Секретный лазер', icon: '🔦' });
+                                updateInventory();
+                            }
+                            updateMoney();
+                            showMessage(`🐲 БОСС-ДРАКОН ПОВЕРЖЕН! +${e.reward} ₽ и 🔦 ЛАЗЕР!`, 'success');
+                        }
+
+                        enemies.splice(i, 1);
+                    }
+                }
+            }
+
+            updateUI();
+        }
+
+        // --- ОБНОВЛЕНИЕ ---
+        function update() {
+            if (!gameRunning || gamePaused) return;
+            if (gameWin || gameOver) return;
+
+            // --- Движение ---
+            let dx = 0, dy = 0;
+            if (keys.left) dx -= player.speed;
+            if (keys.right) dx += player.speed;
+            if (keys.up) dy -= player.speed;
+            if (keys.down) dy += player.speed;
+
+            if (dx !== 0 && dy !== 0) { dx *= 0.707; dy *= 0.707; }
+
+            player.x += dx;
+            player.y += dy;
+            player.x = Math.max(player.radius, Math.min(W - player.radius, player.x));
+            player.y = Math.max(player.radius, Math.min(H - player.radius, player.y));
+
+            if (player.invincible > 0) player.invincible--;
+            if (attackCooldown > 0) attackCooldown--;
+            if (attackTimer > 0) attackTimer--;
+            if (attackTimer === 0) attackActive = false;
+
+            // --- ФЕЯ: неуязвимость ---
+            if (petBonus && petBonus.bonus === 'shield') {
+                fairyShieldCooldown--;
+                if (fairyShieldCooldown <= 0 && !fairyShieldActive) {
+                    fairyShieldActive = true;
+                    fairyShieldTimer = petBonus.value * 60;
+                    showMessage('🧚 Фея дала НЕУЯЗВИМОСТЬ на 2 сек!', 'info');
+                }
+                if (fairyShieldActive) {
+                    fairyShieldTimer--;
+                    if (fairyShieldTimer <= 0) {
+                        fairyShieldActive = false;
+                        fairyShieldCooldown = 30 * 60;
+                    }
+                }
+            }
+
+            // --- Частицы ---
+            for (let i = attackParticles.length - 1; i >= 0; i--) {
+                const p = attackParticles[i];
+                p.x += p.vx;
+                p.y += p.vy;
+                p.vx *= 0.97;
+                p.vy *= 0.97;
+                p.life--;
+                if (p.life <= 0) {
+                    attackParticles.splice(i, 1);
+                }
+            }
+
+            // --- Монетки ---
+            coinTimer++;
+            if (coinTimer > 300) {
+                coinTimer = 0;
+                spawnCoin();
+            }
+
+            for (let i = coins.length - 1; i >= 0; i--) {
+                const c = coins[i];
+                c.pulse += 0.05;
+                const dx2 = player.x - c.x;
+                const dy2 = player.y - c.y;
+                if (Math.sqrt(dx2*dx2 + dy2*dy2) < player.radius + c.radius) {
+                    player.coins += 5;
+                    money += 5;
+                    updateMoney();
+                    coins.splice(i, 1);
+                }
+            }
+
+            for (let i = coins.length - 1; i >= 0; i--) {
+                const c = coins[i];
+                const dx2 = player.x - c.x;
+                const dy2 = player.y - c.y;
+                if (Math.sqrt(dx2*dx2 + dy2*dy2) < 150) {
+                    c.x += (player.x - c.x) * 0.05;
+                    c.y += (player.y - c.y) * 0.05;
+                }
+            }
+
+            // --- СВИТКИ ---
+            scrollTimer++;
+            if (scrollTimer > SCROLL_INTERVAL) {
+                scrollTimer = 0;
+                spawnScroll();
+            }
+
+            for (let i = scrolls.length - 1; i >= 0; i--) {
+                const s = scrolls[i];
+                s.life--;
+                s.pulse += 0.05;
+
+                // Сбор свитка
+                const dx2 = player.x - s.x;
+                const dy2 = player.y - s.y;
+                if (Math.sqrt(dx2*dx2 + dy2*dy2) < player.radius + s.radius && !s.collected) {
+                    s.collected = true;
+                    // Сохраняем свиток
+                    if (!collectedScrolls.some(sc => sc.title === s.title)) {
+                        collectedScrolls.push({ title: s.title, text: s.text });
+                        updateInventory();
+                        showMessage(`📜 Вы нашли свиток "${s.title}"!`, 'success');
+                    } else {
+                        showMessage(`📜 Свиток "${s.title}" уже есть в книге!`, 'info');
+                    }
+                    scrolls.splice(i, 1);
+                    continue;
+                }
+
+                if (s.life <= 0) {
+                    scrolls.splice(i, 1);
+                }
+            }
+
+            // --- Спавн врагов ---
+            if (wave <= MAX_WAVE) {
+                if (!bossSpawned || !bossDefeated) {
+                    enemySpawnTimer++;
+                    const spawnRate = Math.max(20, 80 - wave * 5);
+
+                    if (enemySpawnTimer > spawnRate && enemiesSpawned < enemiesPerWave + wave * 2) {
+                        enemySpawnTimer = 0;
+                        spawnEnemy();
+                        enemiesSpawned++;
+                    }
+
+                    if (enemies.length === 0 && enemiesSpawned >= enemiesPerWave + wave * 2) {
+                        if (wave === MAX_WAVE && !bossSpawned) {
+                            spawnEnemy();
+                        } else if (bossDefeated || wave < MAX_WAVE) {
+                            if (wave < MAX_WAVE) {
+                                wave++;
+                                enemiesSpawned = 0;
+                                bossSpawned = false;
+                                bossDefeated = false;
+                                player.hp = Math.min(player.maxHp, player.hp + 20);
+                                showMessage(`🌊 Волна ${wave}!`, 'info');
+                                updateUI();
+                            } else if (wave === MAX_WAVE && bossDefeated) {
+                                gameWin = true;
+                                gameRunning = false;
+                                showMessage('🏆 ВЫ ПОБЕДИЛИ ВСЕ ВОЛНЫ!', 'success');
+                            }
+                        }
+                    }
+                }
+            }
+
+            // --- Враги ---
+            for (let i = enemies.length - 1; i >= 0; i--) {
+                const e = enemies[i];
+                const dx2 = player.x - e.x;
+                const dy2 = player.y - e.y;
+                const dist = Math.sqrt(dx2 * dx2 + dy2 * dy2);
+
+                let enemySpeed = e.speed;
+                if (petBonus && petBonus.bonus === 'slow') {
+                    enemySpeed = e.speed * 0.8;
+                }
+
+                if (dist > 0) {
+                    e.x += (dx2 / dist) * enemySpeed;
+                    e.y += (dy2 / dist) * enemySpeed;
+                }
+
+                if (dist < player.radius + e.radius && player.invincible === 0 && !gameOver) {
+                    if (fairyShieldActive) {
+                        showMessage('🛡️ Фея защитила!', 'info');
+                    } else {
+                        player.hp -= e.damage;
+                        player.invincible = 30;
+                    }
+
+                    if (player.hp <= 0) {
+                        player.hp = 0;
+                        gameOver = true;
+                        gameRunning = false;
+                        showMessage('💀 Вы погибли!', 'error');
+                        updateUI();
+                        return;
+                    }
+                }
+
+                if (e.x < -80 || e.x > W + 80 || e.y < -80 || e.y > H + 80) {
+                    enemies.splice(i, 1);
+                    continue;
+                }
+
+                if (e.hitTimer > 0) e.hitTimer--;
+            }
+
+            updateUI();
+        }
+
+        // --- Отрисовка ---
+        function draw() {
+            ctx.clearRect(0, 0, W, H);
+
+            // ФОН
+            const grad = ctx.createRadialGradient(W/2, H/2, 100, W/2, H/2, 500);
+            grad.addColorStop(0, '#1a1410');
+            grad.addColorStop(1, '#0a0808');
+            ctx.fillStyle = grad;
+            ctx.fillRect(0, 0, W, H);
+
+            // Сетка
+            ctx.strokeStyle = 'rgba(200, 170, 120, 0.03)';
+            ctx.lineWidth = 1;
+            for (let i = 0; i < W; i += 50) {
+                ctx.beginPath();
+                ctx.moveTo(i, 0);
+                ctx.lineTo(i, H);
+                ctx.stroke();
+            }
+            for (let i = 0; i < H; i += 50) {
+                ctx.beginPath();
+                ctx.moveTo(0, i);
+                ctx.lineTo(W, i);
+                ctx.stroke();
+            }
+
+            // --- Монетки ---
+            for (const c of coins) {
+                c.pulse += 0.05;
+                const glow = 1 + Math.sin(c.pulse) * 0.15;
+                ctx.shadowColor = 'rgba(255, 215, 0, 0.3)';
+                ctx.shadowBlur = 15;
+                ctx.fillStyle = 'rgba(255, 215, 0, 0.1)';
+                ctx.beginPath();
+                ctx.arc(c.x, c.y, c.radius * glow + 4, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.shadowBlur = 0;
+                ctx.font = '16px Arial';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillText('🪙', c.x, c.y);
+            }
+
+            // --- СВИТКИ ---
+            for (const s of scrolls) {
+                const alpha = Math.min(1, s.life / 60);
+                const glow = 1 + Math.sin(s.pulse) * 0.1;
+                ctx.globalAlpha = alpha;
+                ctx.shadowColor = 'rgba(200, 150, 255, 0.5)';
+                ctx.shadowBlur = 30;
+                ctx.fillStyle = 'rgba(200, 150, 255, 0.1)';
+                ctx.beginPath();
+                ctx.arc(s.x, s.y, s.radius * glow + 8, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.shadowBlur = 0;
+                ctx.font = '28px Arial';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillText('📜', s.x, s.y);
+                ctx.font = '10px Montserrat, sans-serif';
+                ctx.fillStyle = '#b89ad4';
+                ctx.fillText(s.title, s.x, s.y + s.radius + 20);
+                ctx.globalAlpha = 1;
+            }
+
+            // --- Враги ---
+            for (const e of enemies) {
+                ctx.shadowColor = 'rgba(0,0,0,0.5)';
+                ctx.shadowBlur = 15;
+                const color = e.hitTimer > 0 ? '#fff' : e.color;
+                ctx.fillStyle = color;
+                ctx.beginPath();
+                ctx.arc(e.x, e.y, e.radius, 0, Math.PI * 2);
+                ctx.fill();
+
+                if (e.type === 'boss') {
+                    ctx.strokeStyle = '#FFD700';
+                    ctx.lineWidth = 4;
+                    ctx.shadowColor = 'rgba(255,215,0,0.5)';
+                    ctx.shadowBlur = 30;
+                    ctx.beginPath();
+                    ctx.arc(e.x, e.y, e.radius + 8, 0, Math.PI * 2);
+                    ctx.stroke();
+                    ctx.shadowBlur = 0;
+                    ctx.fillStyle = '#FFD700';
+                    ctx.font = '30px Arial';
+                    ctx.textAlign = 'center';
+                    ctx.textBaseline = 'bottom';
+                    ctx.fillText('👑', e.x, e.y - e.radius - 10);
+                }
+
+                ctx.shadowBlur = 0;
+                const eyeOffset = e.radius * 0.4;
+                const eyeSize = e.radius * 0.25;
+                ctx.fillStyle = '#000';
+                ctx.beginPath();
+                ctx.arc(e.x - eyeOffset, e.y - 5, eyeSize, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.beginPath();
+                ctx.arc(e.x + eyeOffset, e.y - 5, eyeSize, 0, Math.PI * 2);
+                ctx.fill();
+
+                const dx3 = player.x - e.x;
+                const dy3 = player.y - e.y;
+                const dist3 = Math.sqrt(dx3*dx3 + dy3*dy3);
+                if (dist3 > 0) {
+                    const lookX = (dx3 / dist3) * 3;
+                    const lookY = (dy3 / dist3) * 3;
+                    ctx.fillStyle = '#e89080';
+                    ctx.beginPath();
+                    ctx.arc(e.x - eyeOffset + lookX, e.y - 5 + lookY, eyeSize * 0.5, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.beginPath();
+                    ctx.arc(e.x + eyeOffset + lookX, e.y - 5 + lookY, eyeSize * 0.5, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+
+                if (e.hp < e.maxHp) {
+                    const barW = e.radius * 1.5;
+                    const barH = 5;
+                    const barX = e.x - barW/2;
+                    const barY = e.y - e.radius - 14;
+                    ctx.fillStyle = 'rgba(0,0,0,0.6)';
+                    ctx.fillRect(barX, barY, barW, barH);
+                    const hpPct = e.hp / e.maxHp;
+                    ctx.fillStyle = hpPct > 0.6 ? '#7bc77b' : hpPct > 0.3 ? '#d4af37' : '#e89080';
+                    ctx.fillRect(barX, barY, barW * hpPct, barH);
+                }
+
+                ctx.shadowBlur = 0;
+            }
+
+            // --- Частицы атаки ---
+            for (const p of attackParticles) {
+                const alpha = p.life / p.maxLife;
+                ctx.globalAlpha = alpha;
+                ctx.shadowColor = p.color;
+                ctx.shadowBlur = 15;
+                ctx.fillStyle = p.color;
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, p.size * alpha, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.shadowBlur = 0;
+            }
+            ctx.globalAlpha = 1;
+
+            // --- ИГРОК ---
+            if (!(player.invincible > 0 && player.invincible % 6 < 3)) {
+                ctx.shadowColor = 'rgba(212, 175, 55, 0.3)';
+                ctx.shadowBlur = 30;
+
+                ctx.fillStyle = '#2a1a10';
+                ctx.beginPath();
+                ctx.arc(player.x, player.y, player.radius + 4, 0, Math.PI * 2);
+                ctx.fill();
+
+                // Скин
+                let skinColor = '#4A3A8A';
+                let hatColor = '#2A1A5A';
+                let robeColor = '#2A1A5A';
+                let faceColor = '#D2A679';
+
+                if (activeSkin && skinsMap[activeSkin]) {
+                    if (activeSkin === 'vampire') { skinColor = '#6A1A1A'; hatColor = '#4A0A0A'; robeColor = '#4A0A0A'; faceColor = '#C2A090'; }
+                    else if (activeSkin === 'elf') { skinColor = '#2A6A3A'; hatColor = '#1A4A2A'; robeColor = '#1A4A2A'; faceColor = '#D2C6A9'; }
+                    else if (activeSkin === 'demon') { skinColor = '#8A2A2A'; hatColor = '#5A0A0A'; robeColor = '#5A0A0A'; faceColor = '#A08070'; }
+                    else if (activeSkin === 'cybermage') { skinColor = '#2A3A5A'; hatColor = '#1A2A4A'; robeColor = '#1A2A4A'; faceColor = '#B0A8B0'; }
+                }
+
+                ctx.shadowBlur = 15;
+                ctx.fillStyle = skinColor;
+                ctx.beginPath();
+                ctx.arc(player.x, player.y, player.radius, 0, Math.PI * 2);
+                ctx.fill();
+
+                ctx.fillStyle = robeColor;
+                ctx.beginPath();
+                ctx.arc(player.x + 12, player.y - 5, player.radius * 0.6, 0, Math.PI * 2);
+                ctx.fill();
+
+                ctx.fillStyle = hatColor;
+                ctx.beginPath();
+                ctx.moveTo(player.x - 14, player.y - 8);
+                ctx.lineTo(player.x + 14, player.y - 8);
+                ctx.lineTo(player.x, player.y - 32);
+                ctx.closePath();
+                ctx.fill();
+                ctx.fillStyle = hatColor;
+                ctx.beginPath();
+                ctx.ellipse(player.x, player.y - 6, 16, 4, 0, 0, Math.PI * 2);
+                ctx.fill();
+
+                ctx.shadowBlur = 0;
+                ctx.fillStyle = faceColor;
+                ctx.beginPath();
+                ctx.arc(player.x, player.y - 2, player.radius * 0.6, 0, Math.PI * 2);
+                ctx.fill();
+
+                ctx.fillStyle = '#4A3A8A';
+                ctx.beginPath();
+                ctx.arc(player.x - 6, player.y - 6, 3, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.beginPath();
+                ctx.arc(player.x + 6, player.y - 6, 3, 0, Math.PI * 2);
+                ctx.fill();
+
+                ctx.fillStyle = '#8A7A6A';
+                ctx.beginPath();
+                ctx.arc(player.x, player.y + 8, 8, 0.1, Math.PI - 0.1);
+                ctx.fill();
+
+                // Посох
+                const staffSize = 3 + staffLevel * 0.5;
+                ctx.shadowColor = 'rgba(212, 175, 55, 0.5)';
+                ctx.shadowBlur = 10 + staffLevel * 3;
+
+                ctx.strokeStyle = '#6A4A2A';
+                ctx.lineWidth = staffSize;
+                ctx.beginPath();
+                ctx.moveTo(player.x + 18, player.y + 6);
+                ctx.lineTo(player.x + 35 + staffLevel * 2, player.y + 35 + staffLevel * 2);
+                ctx.stroke();
+
+                const colors = ['#d4af37', '#FFD700', '#FF6B00', '#FF00FF', '#00FFFF'];
+                const crystalColor = colors[Math.min(staffLevel - 1, colors.length - 1)];
+                ctx.fillStyle = crystalColor;
+                ctx.shadowColor = crystalColor;
+                ctx.shadowBlur = 20 + staffLevel * 5;
+                const cx = player.x + 35 + staffLevel * 2;
+                const cy = player.y + 35 + staffLevel * 2;
+                const cSize = 5 + staffLevel * 1.5;
+                ctx.beginPath();
+                ctx.moveTo(cx, cy - cSize);
+                ctx.lineTo(cx + cSize * 0.7, cy);
+                ctx.lineTo(cx, cy + cSize);
+                ctx.lineTo(cx - cSize * 0.7, cy);
+                ctx.closePath();
+                ctx.fill();
+
+                ctx.shadowBlur = 0;
+                ctx.fillStyle = 'rgba(212, 175, 55, 0.1)';
+                ctx.beginPath();
+                ctx.arc(cx, cy, cSize + 6 + staffLevel * 2, 0, Math.PI * 2);
+                ctx.fill();
+            }
+
+            ctx.shadowBlur = 0;
+
+            // --- АНИМАЦИЯ АТАКИ ---
+            if (attackActive) {
+                ctx.shadowBlur = 30;
+                ctx.shadowColor = 'rgba(255, 215, 0, 0.6)';
+                ctx.strokeStyle = 'rgba(255, 215, 0, 0.2)';
+                ctx.lineWidth = 50 + staffLevel * 3;
+                ctx.beginPath();
+                ctx.arc(player.x, player.y, 60 + staffLevel * 4, attackAngle - 0.9, attackAngle + 0.9);
+                ctx.stroke();
+
+                ctx.strokeStyle = 'rgba(255, 215, 0, 0.5)';
+                ctx.lineWidth = 3;
+                ctx.beginPath();
+                ctx.arc(player.x, player.y, 60 + staffLevel * 4, attackAngle - 0.8, attackAngle + 0.8);
+                ctx.stroke();
+
+                for (let i = -4; i <= 4; i++) {
+                    const a = attackAngle + i * 0.15;
+                    ctx.strokeStyle = `rgba(255, 215, 0, ${0.1 + Math.abs(i) * 0.02})`;
+                    ctx.lineWidth = 2;
+                    ctx.beginPath();
+                    ctx.moveTo(player.x + 20 * Math.cos(a), player.y + 20 * Math.sin(a));
+                    const len = 60 + staffLevel * 4 + Math.random() * 20;
+                    ctx.lineTo(player.x + len * Math.cos(a), player.y + len * Math.sin(a));
+                    ctx.stroke();
+                }
+                ctx.shadowBlur = 0;
+            }
+
+            // --- ЭКРАНЫ ---
+            if (!gameRunning && !gameOver && !gameWin) {
+                ctx.fillStyle = 'rgba(0,0,0,0.6)';
+                ctx.fillRect(0, 0, W, H);
+                ctx.fillStyle = '#d4af37';
+                ctx.font = '36px Cormorant Garamond, serif';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillText('⚔️ Нажмите "Начать"', W/2, H/2 - 30);
+                ctx.font = '18px Montserrat, sans-serif';
+                ctx.fillStyle = '#9a8a78';
+                ctx.fillText('Стрелки ↑↓←→ движение | ПРОБЕЛ атака | Собирай свитки!', W/2, H/2 + 30);
+                ctx.fillStyle = '#b89ad4';
+                ctx.fillText('📜 Свитки появляются каждую минуту и исчезают через 5 секунд', W/2, H/2 + 65);
+            }
+
+            if (gameOver) {
+                ctx.fillStyle = 'rgba(0,0,0,0.7)';
+                ctx.fillRect(0, 0, W, H);
+                ctx.fillStyle = '#e89080';
+                ctx.font = '48px Cormorant Garamond, serif';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillText('💀 ВЫ ПАЛИ', W/2, H/2 - 30);
+                ctx.font = '20px Montserrat, sans-serif';
+                ctx.fillStyle = '#9a8a78';
+                ctx.fillText(`Убито: ${player.kills} | Волна: ${wave}/5`, W/2, H/2 + 30);
+                ctx.fillStyle = '#d4af37';
+                ctx.fillText('Нажмите "Сброс" чтобы начать заново', W/2, H/2 + 70);
+            }
+
+            if (gameWin) {
+                ctx.fillStyle = 'rgba(0,0,0,0.6)';
+                ctx.fillRect(0, 0, W, H);
+                ctx.fillStyle = '#FFD700';
+                ctx.font = '48px Cormorant Garamond, serif';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillText('🏆 ПОБЕДА!', W/2, H/2 - 40);
+                ctx.font = '24px Montserrat, sans-serif';
+                ctx.fillStyle = '#d4af37';
+                ctx.fillText('Вы победили БОССА-ДРАКОНА!', W/2, H/2 + 20);
+                ctx.fillStyle = '#7bc77b';
+                ctx.font = '18px Montserrat, sans-serif';
+                ctx.fillText('🔦 Вы получили СЕКРЕТНЫЙ ЛАЗЕР!', W/2, H/2 + 60);
+                ctx.fillStyle = '#9a8a78';
+                ctx.fillText('Нажмите "Сброс" чтобы начать заново', W/2, H/2 + 100);
+            }
+
+            if (gamePaused && gameRunning) {
+                ctx.fillStyle = 'rgba(0,0,0,0.5)';
+                ctx.fillRect(0, 0, W, H);
+                ctx.fillStyle = '#d4af37';
+                ctx.font = '36px Cormorant Garamond, serif';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillText('⏸️ ПАУЗА', W/2, H/2);
+            }
+        }
+
+        // --- ИГРОВОЙ ЦИКЛ ---
+        function gameLoop() {
+            update();
+            draw();
+            requestAnimationFrame(gameLoop);
+        }
+
+        // --- УПРАВЛЕНИЕ ---
+        document.addEventListener('keydown', (e) => {
+            switch(e.key) {
+                case 'ArrowLeft': keys.left = true; e.preventDefault(); break;
+                case 'ArrowRight': keys.right = true; e.preventDefault(); break;
+                case 'ArrowUp': keys.up = true; e.preventDefault(); break;
+                case 'ArrowDown': keys.down = true; e.preventDefault(); break;
+                case ' ': e.preventDefault(); playerAttack(); break;
+                case 'p': case 'P': if (gameRunning) { gamePaused = !gamePaused; } break;
+            }
+        });
+
+        document.addEventListener('keyup', (e) => {
+            switch(e.key) {
+                case 'ArrowLeft': keys.left = false; e.preventDefault(); break;
+                case 'ArrowRight': keys.right = false; e.preventDefault(); break;
+                case 'ArrowUp': keys.up = false; e.preventDefault(); break;
+                case 'ArrowDown': keys.down = false; e.preventDefault(); break;
+            }
+        });
+
+        document.querySelectorAll('.mobile-controls button').forEach(btn => {
+            const dir = btn.dataset.dir;
+            btn.addEventListener('touchstart', (e) => { e.preventDefault(); keys[dir] = true; });
+            btn.addEventListener('touchend', (e) => { e.preventDefault(); keys[dir] = false; });
+            btn.addEventListener('touchcancel', () => { keys[dir] = false; });
+            btn.addEventListener('mousedown', () => { keys[dir] = true; });
+            btn.addEventListener('mouseup', () => { keys[dir] = false; });
+            btn.addEventListener('mouseleave', () => { keys[dir] = false; });
+        });
+
+        // --- КНОПКИ ---
+        document.getElementById('startBtn').addEventListener('click', () => {
+            if (gameRunning) return;
+            gameRunning = true;
+            gamePaused = false;
+            gameOver = false;
+            gameWin = false;
+            player.hp = player.maxHp;
+            player.invincible = 0;
+            player.kills = 0;
+            player.coins = 0;
+            enemies = [];
+            coins = [];
+            scrolls = [];
+            attackParticles = [];
+            wave = 1;
+            enemiesSpawned = 0;
+            bossSpawned = false;
+            bossDefeated = false;
+            enemySpawnTimer = 0;
+            coinTimer = 0;
+            scrollTimer = 0;
+            showMessage('⚔️ Битва началась! Убивай врагов и собирай свитки!', 'success');
+            updateUI();
+        });
+
+        document.getElementById('pauseBtn').addEventListener('click', () => {
+            if (!gameRunning || gameOver || gameWin) return;
+            gamePaused = !gamePaused;
+            showMessage(gamePaused ? '⏸️ Пауза' : '▶️ Продолжаем!', 'info');
+        });
+
+        document.getElementById('resetBtn').addEventListener('click', () => {
+            gameRunning = false;
+            gamePaused = false;
+            gameOver = false;
+            gameWin = false;
+            player.hp = player.maxHp;
+            player.x = 500;
+            player.y = 250;
+            player.invincible = 0;
+            player.kills = 0;
+            player.coins = 0;
+            enemies = [];
+            coins = [];
+            scrolls = [];
+            attackParticles = [];
+            wave = 1;
+            enemiesSpawned = 0;
+            bossSpawned = false;
+            bossDefeated = false;
+            enemySpawnTimer = 0;
+            coinTimer = 0;
+            scrollTimer = 0;
+            staffLevel = 1;
+            staffDamage = 15;
+            staffRange = 100;
+            updateUI();
+            showMessage('🔄 Игра сброшена', 'info');
+        });
+
+        document.getElementById('attackBtn').addEventListener('click', playerAttack);
+        document.getElementById('attackBtn').addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            playerAttack();
+        });
+
+        // --- ПРОКАЧКА ---
+        document.getElementById('upgradeStaff').addEventListener('click', () => {
+            if (staffLevel >= 10) {
+                showMessage('⚠️ Посох уже максимального уровня!', 'error');
+                return;
+            }
+            const cost = 50 * staffLevel;
+            if (money < cost) {
+                showMessage(`❌ Нужно ${cost} ₽ для прокачки!`, 'error');
+                return;
+            }
+            money -= cost;
+            staffLevel++;
+            staffDamage = 15 + staffLevel * 3;
+            staffRange = 100 + staffLevel * 5;
+            updateMoney();
+            updateUI();
+            showMessage(`⬆️ Посох улучшен до ${staffLevel} уровня!`, 'success');
+        });
+
+        document.getElementById('healBtn').addEventListener('click', () => {
+            if (player.hp >= player.maxHp) {
+                showMessage('❤️ У вас полное здоровье!', 'info');
+                return;
+            }
+            if (money < 30) {
+                showMessage('❌ Нужно 30 ₽ для лечения!', 'error');
+                return;
+            }
+            money -= 30;
+            player.hp = Math.min(player.maxHp, player.hp + 30);
+            updateMoney();
+            updateUI();
+            showMessage('💚 Вы восстановили 30 HP!', 'success');
+        });
+
+        // --- ИНИЦИАЛИЗАЦИЯ ---
+        updateMoney();
+        updateInventory();
+        updateUI();
+        gameLoop();
+
+        window.addEventListener('storage', function(e) {
+            if (e.key === 'magicMoney') {
+                money = parseInt(e.newValue) || 4000;
+                updateMoney();
+            }
+            if (e.key === 'magicInventory') {
+                inventory = JSON.parse(e.newValue) || [];
+                updateInventory();
+            }
+            if (e.key === 'collectedScrolls') {
+                collectedScrolls = JSON.parse(e.newValue) || [];
+                updateInventory();
+            }
+            if (e.key === 'ownedSkins' || e.key === 'ownedPets' || e.key === 'activeSkin' || e.key === 'activePet') {
+                const newSkins = JSON.parse(localStorage.getItem('ownedSkins')) || [];
+                const newPets = JSON.parse(localStorage.getItem('ownedPets')) || [];
+                activeSkin = localStorage.getItem('activeSkin') || null;
+                activePet = localStorage.getItem('activePet') || null;
+                skinBonus = getSkinBonus();
+                updateSkinPetDisplay();
+            }
+        });
+
+        console.log('🔥 Битва с СВИТКАМИ запущена! Собирай 📜 каждую минуту!');
+    </script>
+</body>
+</html>

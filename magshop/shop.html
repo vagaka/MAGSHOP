@@ -1,0 +1,849 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🛒 Магазин — Свиток.Доставка</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Montserrat:wght@300;500;700&display=swap');
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background-color: #0c0a0a;
+            background-image: radial-gradient(circle at 10% 20%, #1a1410 0%, #080606 90%);
+            color: #e4dac7;
+            min-height: 100vh;
+            padding: 20px;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        #particles-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        .wrapper {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 30px;
+            background: rgba(20, 15, 12, 0.6);
+            backdrop-filter: blur(3px);
+            border-radius: 48px;
+            border: 1px solid rgba(200, 170, 120, 0.15);
+            box-shadow: 0 20px 80px rgba(0, 0, 0, 0.8);
+            position: relative;
+            z-index: 10;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 25px;
+            border-bottom: 1px solid rgba(200, 170, 120, 0.15);
+            padding-bottom: 20px;
+        }
+
+        .logo {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 2rem;
+            font-weight: 600;
+            letter-spacing: 4px;
+            color: #f3e5c8;
+            text-decoration: none;
+        }
+        .logo span { color: #b89a7a; }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .money {
+            background: rgba(212, 175, 55, 0.08);
+            padding: 8px 20px;
+            border-radius: 40px;
+            border: 1px solid rgba(212, 175, 55, 0.15);
+            color: #d4af37;
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
+        .money::before { content: "🪙 "; }
+
+        .btn-back {
+            padding: 8px 14px;
+            border-radius: 40px;
+            border: 1px solid rgba(200, 170, 120, 0.2);
+            background: rgba(255, 215, 150, 0.03);
+            color: #b3a390;
+            text-decoration: none;
+            font-size: 0.7rem;
+            letter-spacing: 2px;
+            transition: all 0.3s;
+        }
+        .btn-back:hover {
+            background: rgba(212, 175, 55, 0.12);
+            border-color: rgba(212, 175, 55, 0.4);
+            color: #d4af37;
+        }
+
+        .page-title {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 2.5rem;
+            text-align: center;
+            margin-bottom: 8px;
+            color: #efe6d3;
+        }
+        .page-title small {
+            display: block;
+            font-size: 0.95rem;
+            color: #7f7364;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 300;
+            letter-spacing: 2px;
+        }
+
+        /* --- Вкладки --- */
+        .tabs {
+            display: flex;
+            gap: 8px;
+            margin: 20px 0 25px;
+            background: rgba(0,0,0,0.2);
+            border-radius: 60px;
+            padding: 6px;
+            border: 1px solid rgba(200, 170, 120, 0.05);
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        .tab-btn {
+            padding: 10px 18px;
+            border: none;
+            background: transparent;
+            border-radius: 40px;
+            color: #7f7364;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 600;
+            font-size: 0.75rem;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: all 0.4s ease;
+        }
+        .tab-btn.active {
+            background: rgba(212, 175, 55, 0.12);
+            color: #d4af37;
+            border: 1px solid rgba(212, 175, 55, 0.15);
+            box-shadow: 0 0 30px rgba(212, 175, 55, 0.05);
+        }
+        .tab-btn:hover:not(.active) {
+            color: #b3a390;
+        }
+
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.4s ease;
+        }
+        .tab-content.active {
+            display: block;
+        }
+        @keyframes fadeIn {
+            0% { opacity: 0; transform: translateY(10px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+
+        /* --- Сетка товаров --- */
+        .shop-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 18px;
+            margin: 15px 0;
+        }
+
+        .shop-item {
+            background: rgba(26, 20, 16, 0.7);
+            border-radius: 28px;
+            padding: 18px 14px 16px;
+            text-align: center;
+            border: 1px solid rgba(200, 170, 120, 0.08);
+            transition: all 0.4s ease;
+            position: relative;
+        }
+        .shop-item:hover {
+            transform: translateY(-5px);
+            border-color: rgba(212, 175, 55, 0.3);
+            box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+        }
+        .shop-item.owned {
+            border-color: rgba(100, 200, 100, 0.2);
+            background: rgba(100, 200, 100, 0.03);
+        }
+        .shop-item.owned .btn-buy {
+            background: rgba(100, 200, 100, 0.1);
+            border-color: #7bc77b;
+            color: #7bc77b;
+        }
+
+        .shop-item .icon {
+            font-size: 3.2rem;
+            display: block;
+            margin-bottom: 6px;
+            filter: drop-shadow(0 0 15px rgba(212, 175, 55, 0.1));
+        }
+        .shop-item .icon.pet {
+            font-size: 3rem;
+        }
+        .shop-item .icon.ingredient {
+            font-size: 2.8rem;
+        }
+        .shop-item h3 {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.2rem;
+            color: #f0e4d0;
+        }
+        .shop-item .price {
+            color: #d4af37;
+            font-weight: 700;
+            font-size: 0.95rem;
+            margin: 4px 0;
+        }
+        .shop-item .desc {
+            font-size: 0.7rem;
+            color: #9a8a78;
+            margin-bottom: 6px;
+            line-height: 1.3;
+            min-height: 32px;
+        }
+        .shop-item .bonus {
+            font-size: 0.65rem;
+            color: #7bc77b;
+            background: rgba(100, 200, 100, 0.06);
+            padding: 3px 10px;
+            border-radius: 20px;
+            display: inline-block;
+            margin-bottom: 8px;
+            border: 1px solid rgba(100, 200, 100, 0.1);
+        }
+        .shop-item .rarity {
+            font-size: 0.5rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-bottom: 4px;
+        }
+        .rarity-common { color: #7f8c8d; }
+        .rarity-uncommon { color: #2ecc71; }
+        .rarity-rare { color: #3498db; }
+        .rarity-epic { color: #9b59b6; }
+        .rarity-legendary { color: #e67e22; }
+
+        .shop-item .badge-owned {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            background: rgba(100, 200, 100, 0.12);
+            border: 1px solid rgba(100, 200, 100, 0.2);
+            color: #7bc77b;
+            font-size: 0.5rem;
+            padding: 2px 8px;
+            border-radius: 20px;
+            letter-spacing: 1px;
+        }
+        .shop-item .badge-active {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            background: rgba(212, 175, 55, 0.15);
+            border: 1px solid #d4af37;
+            color: #d4af37;
+            font-size: 0.5rem;
+            padding: 2px 8px;
+            border-radius: 20px;
+            letter-spacing: 1px;
+        }
+
+        .btn-buy {
+            padding: 8px 24px;
+            border-radius: 40px;
+            border: 1px solid #d4af37;
+            background: linear-gradient(145deg, #1f1814, #0e0b09);
+            color: #d4af37;
+            font-weight: 600;
+            font-size: 0.7rem;
+            letter-spacing: 2px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-family: 'Montserrat', sans-serif;
+        }
+        .btn-buy:hover {
+            background: linear-gradient(145deg, #2a201a, #14100d);
+            box-shadow: 0 0 30px rgba(212, 175, 55, 0.1);
+            transform: scale(1.02);
+        }
+        .btn-buy:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn-select {
+            padding: 8px 24px;
+            border-radius: 40px;
+            border: 1px solid #7bc77b;
+            background: rgba(100, 200, 100, 0.05);
+            color: #7bc77b;
+            font-weight: 600;
+            font-size: 0.7rem;
+            letter-spacing: 2px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-family: 'Montserrat', sans-serif;
+        }
+        .btn-select:hover {
+            background: rgba(100, 200, 100, 0.12);
+            box-shadow: 0 0 30px rgba(100, 200, 100, 0.05);
+            transform: scale(1.02);
+        }
+
+        .message {
+            text-align: center;
+            padding: 12px;
+            border-radius: 40px;
+            margin: 10px 0;
+            display: none;
+        }
+        .message.success { display: block; background: rgba(100, 200, 100, 0.08); border: 1px solid rgba(100, 200, 100, 0.2); color: #7bc77b; }
+        .message.error { display: block; background: rgba(200, 80, 60, 0.08); border: 1px solid rgba(200, 80, 60, 0.15); color: #c47a6a; }
+        .message.info { display: block; background: rgba(212, 175, 55, 0.08); border: 1px solid rgba(212, 175, 55, 0.15); color: #d4af37; }
+
+        .inventory-section {
+            margin-top: 30px;
+            padding-top: 25px;
+            border-top: 1px solid rgba(200, 170, 120, 0.1);
+        }
+        .inventory-section h3 {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.8rem;
+            color: #d4c4ae;
+            margin-bottom: 12px;
+        }
+        .inventory-items {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .inv-tag {
+            background: rgba(212, 175, 55, 0.08);
+            border: 1px solid rgba(212, 175, 55, 0.12);
+            padding: 5px 14px;
+            border-radius: 40px;
+            font-size: 0.8rem;
+            color: #d4af37;
+        }
+        .inv-tag.active {
+            background: rgba(212, 175, 55, 0.15);
+            border-color: #d4af37;
+            color: #d4af37;
+        }
+
+        .category-label {
+            font-size: 1.2rem;
+            font-family: 'Cormorant Garamond', serif;
+            margin: 20px 0 12px;
+            color: #d4c4ae;
+            letter-spacing: 2px;
+            border-bottom: 1px solid rgba(200, 170, 120, 0.1);
+            padding-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        @media (max-width: 600px) {
+            .wrapper { padding: 18px; border-radius: 32px; }
+            .shop-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+            .shop-item { padding: 14px 8px 12px; }
+            .shop-item .icon { font-size: 2.4rem; }
+            .shop-item h3 { font-size: 1rem; }
+            .header { flex-direction: column; align-items: flex-start; }
+            .header-right { width: 100%; justify-content: space-between; }
+            .tabs .tab-btn { font-size: 0.6rem; padding: 6px 10px; }
+        }
+    </style>
+</head>
+<body>
+
+    <canvas id="particles-canvas"></canvas>
+
+    <div class="wrapper">
+        <header class="header">
+            <a href="index.html" class="logo">✦ Свиток <span>магазин</span></a>
+            <div class="header-right">
+                <span class="money" id="moneyDisplay">4 000</span>
+                <a href="index.html" class="btn-back">← Главная</a>
+                <a href="battle.html" class="btn-back" style="border-color:rgba(255,100,100,0.2); color:#e89080;">⚔️ Битва</a>
+                <a href="cauldron.html" class="btn-back" style="border-color:rgba(100,200,100,0.2); color:#7bc77b;">⚗️ Алхимия</a>
+            </div>
+        </header>
+
+        <h1 class="page-title">
+            🛒 Лавка магии
+            <small>Скины, питомцы, ингредиенты и артефакты</small>
+        </h1>
+
+        <div id="message" class="message"></div>
+
+        <!-- Вкладки -->
+        <div class="tabs">
+            <button class="tab-btn active" data-tab="skins">🧙 Скины</button>
+            <button class="tab-btn" data-tab="pets">🐾 Питомцы</button>
+            <button class="tab-btn" data-tab="ingredients">🌿 Ингредиенты</button>
+            <button class="tab-btn" data-tab="artifacts">⚡ Артефакты</button>
+        </div>
+
+        <!-- Скины -->
+        <div class="tab-content active" id="tab-skins">
+            <p style="color:#7f7364; font-size:0.9rem; margin-bottom:15px; letter-spacing:1px;">
+                🎨 Измени внешность своего колдуна в битве!
+            </p>
+            <div class="shop-grid" id="skinGrid"></div>
+        </div>
+
+        <!-- Питомцы -->
+        <div class="tab-content" id="tab-pets">
+            <p style="color:#7f7364; font-size:0.9rem; margin-bottom:15px; letter-spacing:1px;">
+                🐾 Питомец следует за тобой в битве и даёт бонусы!
+            </p>
+            <div class="shop-grid" id="petGrid"></div>
+        </div>
+
+        <!-- Ингредиенты -->
+        <div class="tab-content" id="tab-ingredients">
+            <p style="color:#7f7364; font-size:0.9rem; margin-bottom:15px; letter-spacing:1px;">
+                🌿 Ингредиенты для алхимии. Покупай и вари зелья!
+            </p>
+            <div class="shop-grid" id="ingredientGrid"></div>
+        </div>
+
+        <!-- Артефакты -->
+        <div class="tab-content" id="tab-artifacts">
+            <p style="color:#7f7364; font-size:0.9rem; margin-bottom:15px; letter-spacing:1px;">
+                ⚡ Артефакты дают мощные бонусы в битве!
+            </p>
+            <div class="shop-grid" id="artifactGrid"></div>
+        </div>
+
+        <!-- Инвентарь -->
+        <div class="inventory-section">
+            <h3>📦 Ваши покупки</h3>
+            <div class="inventory-items" id="inventoryItems">
+                <span class="inv-tag" style="color:#7f7364;">Пока ничего не куплено</span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ============================================
+        // МАГАЗИН — ВСЕ ТОВАРЫ!
+        // ============================================
+
+        // --- СКИНЫ ---
+        const skinsData = [
+            { id: 'vampire', icon: '🧛', name: 'Вампир', price: 500, desc: 'Хилит при убийстве врага', bonus: '+5 HP за убийство' },
+            { id: 'elf', icon: '🧝', name: 'Эльф', price: 700, desc: 'Двигается быстрее всех', bonus: '+20% скорости' },
+            { id: 'demon', icon: '👹', name: 'Демон', price: 3000, desc: 'Плюётся огнём дальше всех', bonus: '+50% дальности' },
+            { id: 'cybermage', icon: '🤖', name: 'Кибермаг', price: 8000, desc: 'Огромный урон, шанс 1-хита', bonus: '+100% урона + 10% 1-хит' }
+        ];
+
+        // --- ПИТОМЦЫ ---
+        const petsData = [
+            { id: 'wolf', icon: '🐺', name: 'Волк', price: 100, desc: 'Увеличивает скорость', bonus: '+5 к скорости' },
+            { id: 'owl', icon: '🦉', name: 'Сова', price: 1000, desc: 'Замедляет врагов', bonus: 'Замедление -20%' },
+            { id: 'dragon', icon: '🐉', name: 'Дракончик', price: 4000, desc: 'Увеличивает атаку', bonus: '+6 к атаке' },
+            { id: 'fairy', icon: '🧚', name: 'Фея', price: 6000, desc: 'Неуязвимость на 2 сек', bonus: 'Щит 2 сек / 30 сек' }
+        ];
+
+        // --- ИНГРЕДИЕНТЫ ---
+        const ingredientsData = [
+            { id: 'moonstone', icon: '🌙', name: 'Лунный камень', price: 150, desc: 'Светится в темноте', rarity: 'common' },
+            { id: 'silverdew', icon: '💧', name: 'Серебряная роса', price: 120, desc: 'Собрана на рассвете', rarity: 'common' },
+            { id: 'mandrake', icon: '🌿', name: 'Корень мандрагоры', price: 200, desc: 'Редкий корень', rarity: 'uncommon' },
+            { id: 'nightshade', icon: '🌺', name: 'Цветок белладонны', price: 180, desc: 'Ядовит, но полезен', rarity: 'uncommon' },
+            { id: 'dragonscale', icon: '🐉', name: 'Чешуя дракона', price: 300, desc: 'Огнеупорная', rarity: 'rare' },
+            { id: 'basiliskeye', icon: '👁️', name: 'Глаз василиска', price: 450, desc: 'Осторожно!', rarity: 'epic' },
+            { id: 'phoenixfeather', icon: '🔥', name: 'Перо феникса', price: 500, desc: 'Горит и не сгорает', rarity: 'legendary' },
+            { id: 'unicornhair', icon: '🦄', name: 'Волос единорога', price: 600, desc: 'Чистая магия', rarity: 'legendary' },
+            { id: 'ancientamber', icon: '💛', name: 'Древний янтарь', price: 400, desc: 'Из доисторических лесов', rarity: 'epic' },
+            { id: 'runicstone', icon: '🪨', name: 'Рунический камень', price: 350, desc: 'С рунами древних магов', rarity: 'rare' },
+            { id: 'nanobots', icon: '🤖', name: 'Наноботы', price: 550, desc: 'Микроскопические роботы', rarity: 'epic' },
+            { id: 'plasmacrystal', icon: '💠', name: 'Плазменный кристалл', price: 600, desc: 'Энергия будущего', rarity: 'legendary' },
+            { id: 'timetwist', icon: '⏳', name: 'Песок времени', price: 700, desc: 'Из ткани времени', rarity: 'legendary' },
+            { id: 'stardust', icon: '⭐', name: 'Звёздная пыль', price: 550, desc: 'Падает с небес', rarity: 'legendary' },
+            { id: 'voidcrystal', icon: '💠', name: 'Кристалл пустоты', price: 650, desc: 'Из глубин космоса', rarity: 'epic' },
+            { id: 'ghostshroom', icon: '🍄', name: 'Призрачный гриб', price: 220, desc: 'Растёт на кладбищах', rarity: 'uncommon' }
+        ];
+
+        // --- АРТЕФАКТЫ ---
+        const artifactsData = [
+            { id: 'fireorb', icon: '🔮', name: 'Огненный шар', price: 800, desc: 'Увеличивает урон огнём', bonus: '+20% урона' },
+            { id: 'iceshield', icon: '🛡️', name: 'Ледяной щит', price: 1000, desc: 'Защищает от магии', bonus: '+15% защиты' },
+            { id: 'thunderhammer', icon: '🔨', name: 'Молот грома', price: 1500, desc: 'Оглушает врагов', bonus: 'Шанс оглушить 15%' },
+            { id: 'shadowcloak', icon: '👻', name: 'Плащ теней', price: 2000, desc: 'Даёт невидимость', bonus: 'Скрытность +30%' },
+            { id: 'dragonsoul', icon: '🐲', name: 'Душа дракона', price: 3000, desc: 'Сила древних', bonus: '+50% ко всем статам' },
+            { id: 'timering', icon: '⏳', name: 'Кольцо времени', price: 5000, desc: 'Замедляет врагов', bonus: 'Замедление врагов -30%' }
+        ];
+
+        // --- Состояние ---
+        let money = parseInt(localStorage.getItem('magicMoney')) || 4000;
+        let inventory = JSON.parse(localStorage.getItem('magicInventory')) || [];
+        let ownedSkins = JSON.parse(localStorage.getItem('ownedSkins')) || [];
+        let ownedPets = JSON.parse(localStorage.getItem('ownedPets')) || [];
+        let activeSkin = localStorage.getItem('activeSkin') || null;
+        let activePet = localStorage.getItem('activePet') || null;
+
+        const moneyDisplay = document.getElementById('moneyDisplay');
+        const inventoryItems = document.getElementById('inventoryItems');
+        const messageDiv = document.getElementById('message');
+
+        function updateMoney() {
+            moneyDisplay.textContent = money.toLocaleString('ru-RU');
+            localStorage.setItem('magicMoney', money.toString());
+        }
+
+        function updateInventory() {
+            localStorage.setItem('magicInventory', JSON.stringify(inventory));
+            localStorage.setItem('ownedSkins', JSON.stringify(ownedSkins));
+            localStorage.setItem('ownedPets', JSON.stringify(ownedPets));
+            localStorage.setItem('activeSkin', activeSkin);
+            localStorage.setItem('activePet', activePet);
+
+            const allItems = [
+                ...ownedSkins.map(s => ({ ...s, type: 'skin' })),
+                ...ownedPets.map(p => ({ ...p, type: 'pet' })),
+                ...inventory.map(i => ({ ...i, type: 'item' }))
+            ];
+
+            if (allItems.length === 0) {
+                inventoryItems.innerHTML = '<span class="inv-tag" style="color:#7f7364;">Пока ничего не куплено</span>';
+            } else {
+                inventoryItems.innerHTML = allItems.map(item => {
+                    const isActive = (item.type === 'skin' && activeSkin === item.id) ||
+                                    (item.type === 'pet' && activePet === item.id);
+                    return `<span class="inv-tag ${isActive ? 'active' : ''}">
+                        ${item.icon} ${item.name} ${isActive ? '⭐' : ''}
+                    </span>`;
+                }).join('');
+            }
+
+            renderShop();
+        }
+
+        function showMessage(text, type = 'success') {
+            messageDiv.textContent = text;
+            messageDiv.className = `message ${type}`;
+            messageDiv.style.display = 'block';
+            setTimeout(() => { messageDiv.style.display = 'none'; }, 3500);
+        }
+
+        // --- Рендер магазина ---
+        function renderShop() {
+            // Скины
+            const skinGrid = document.getElementById('skinGrid');
+            skinGrid.innerHTML = skinsData.map(skin => {
+                const owned = ownedSkins.some(s => s.id === skin.id);
+                const isActive = activeSkin === skin.id;
+                return `
+                    <div class="shop-item ${owned ? 'owned' : ''}">
+                        ${owned ? (isActive ? '<span class="badge-active">⭐ Активен</span>' : '<span class="badge-owned">✅ Владеет</span>') : ''}
+                        <span class="icon">${skin.icon}</span>
+                        <h3>${skin.name}</h3>
+                        <div class="price">${skin.price} ₽</div>
+                        <div class="desc">${skin.desc}</div>
+                        <div class="bonus">✨ ${skin.bonus}</div>
+                        ${owned
+                            ? (isActive
+                                ? `<button class="btn-buy" disabled style="opacity:0.5;">✅ Активен</button>`
+                                : `<button class="btn-select" onclick="selectSkin('${skin.id}')">⭐ Выбрать</button>`
+                            )
+                            : `<button class="btn-buy" onclick="buySkin('${skin.id}')">Купить</button>`
+                        }
+                    </div>
+                `;
+            }).join('');
+
+            // Питомцы
+            const petGrid = document.getElementById('petGrid');
+            petGrid.innerHTML = petsData.map(pet => {
+                const owned = ownedPets.some(p => p.id === pet.id);
+                const isActive = activePet === pet.id;
+                return `
+                    <div class="shop-item ${owned ? 'owned' : ''}">
+                        ${owned ? (isActive ? '<span class="badge-active">⭐ Активен</span>' : '<span class="badge-owned">✅ Владеет</span>') : ''}
+                        <span class="icon pet">${pet.icon}</span>
+                        <h3>${pet.name}</h3>
+                        <div class="price">${pet.price} ₽</div>
+                        <div class="desc">${pet.desc}</div>
+                        <div class="bonus">✨ ${pet.bonus}</div>
+                        ${owned
+                            ? (isActive
+                                ? `<button class="btn-buy" disabled style="opacity:0.5;">✅ Активен</button>`
+                                : `<button class="btn-select" onclick="selectPet('${pet.id}')">⭐ Выбрать</button>`
+                            )
+                            : `<button class="btn-buy" onclick="buyPet('${pet.id}')">Купить</button>`
+                        }
+                    </div>
+                `;
+            }).join('');
+
+            // Ингредиенты
+            const ingredientGrid = document.getElementById('ingredientGrid');
+            ingredientGrid.innerHTML = ingredientsData.map(item => {
+                const owned = inventory.some(i => i.id === item.id);
+                const rarityClass = `rarity-${item.rarity || 'common'}`;
+                return `
+                    <div class="shop-item ${owned ? 'owned' : ''}">
+                        ${owned ? '<span class="badge-owned">✅ В инвентаре</span>' : ''}
+                        <span class="icon ingredient">${item.icon}</span>
+                        <h3>${item.name}</h3>
+                        <div class="rarity ${rarityClass}">✦ ${(item.rarity || 'common').toUpperCase()}</div>
+                        <div class="price">${item.price} ₽</div>
+                        <div class="desc">${item.desc}</div>
+                        ${owned
+                            ? `<button class="btn-buy" disabled style="opacity:0.5;">✅ Есть</button>`
+                            : `<button class="btn-buy" onclick="buyIngredient('${item.id}')">Купить</button>`
+                        }
+                    </div>
+                `;
+            }).join('');
+
+            // Артефакты
+            const artifactGrid = document.getElementById('artifactGrid');
+            artifactGrid.innerHTML = artifactsData.map(item => {
+                const owned = inventory.some(i => i.id === item.id);
+                return `
+                    <div class="shop-item ${owned ? 'owned' : ''}">
+                        ${owned ? '<span class="badge-owned">✅ В инвентаре</span>' : ''}
+                        <span class="icon">${item.icon}</span>
+                        <h3>${item.name}</h3>
+                        <div class="price">${item.price} ₽</div>
+                        <div class="desc">${item.desc}</div>
+                        <div class="bonus">⚡ ${item.bonus}</div>
+                        ${owned
+                            ? `<button class="btn-buy" disabled style="opacity:0.5;">✅ Есть</button>`
+                            : `<button class="btn-buy" onclick="buyArtifact('${item.id}')">Купить</button>`
+                        }
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // --- ПОКУПКИ ---
+        function buySkin(id) {
+            const item = skinsData.find(s => s.id === id);
+            if (!item) return;
+            if (ownedSkins.some(s => s.id === id)) {
+                showMessage('⚠️ У вас уже есть этот скин!', 'error');
+                return;
+            }
+            if (money < item.price) {
+                showMessage(`❌ Недостаточно средств! Нужно ${item.price} ₽`, 'error');
+                return;
+            }
+            money -= item.price;
+            ownedSkins.push({ id: item.id, name: item.name, icon: item.icon });
+            activeSkin = item.id;
+            updateMoney();
+            updateInventory();
+            showMessage(`✅ Вы купили скин ${item.icon} ${item.name}!`, 'success');
+        }
+
+        function buyPet(id) {
+            const item = petsData.find(p => p.id === id);
+            if (!item) return;
+            if (ownedPets.some(p => p.id === id)) {
+                showMessage('⚠️ У вас уже есть этот питомец!', 'error');
+                return;
+            }
+            if (money < item.price) {
+                showMessage(`❌ Недостаточно средств! Нужно ${item.price} ₽`, 'error');
+                return;
+            }
+            money -= item.price;
+            ownedPets.push({ id: item.id, name: item.name, icon: item.icon });
+            activePet = item.id;
+            updateMoney();
+            updateInventory();
+            showMessage(`✅ Вы купили питомца ${item.icon} ${item.name}!`, 'success');
+        }
+
+        function buyIngredient(id) {
+            const item = ingredientsData.find(i => i.id === id);
+            if (!item) return;
+            if (inventory.some(i => i.id === id)) {
+                showMessage('⚠️ У вас уже есть этот ингредиент!', 'error');
+                return;
+            }
+            if (money < item.price) {
+                showMessage(`❌ Недостаточно средств! Нужно ${item.price} ₽`, 'error');
+                return;
+            }
+            money -= item.price;
+            inventory.push({ id: item.id, name: item.name, icon: item.icon, price: item.price });
+            updateMoney();
+            updateInventory();
+            showMessage(`✅ Вы купили ${item.icon} ${item.name}!`, 'success');
+        }
+
+        function buyArtifact(id) {
+            const item = artifactsData.find(a => a.id === id);
+            if (!item) return;
+            if (inventory.some(i => i.id === id)) {
+                showMessage('⚠️ У вас уже есть этот артефакт!', 'error');
+                return;
+            }
+            if (money < item.price) {
+                showMessage(`❌ Недостаточно средств! Нужно ${item.price} ₽`, 'error');
+                return;
+            }
+            money -= item.price;
+            inventory.push({ id: item.id, name: item.name, icon: item.icon, price: item.price });
+            updateMoney();
+            updateInventory();
+            showMessage(`✅ Вы купили ${item.icon} ${item.name}!`, 'success');
+        }
+
+        // --- ВЫБОР ---
+        function selectSkin(id) {
+            if (!ownedSkins.some(s => s.id === id)) {
+                showMessage('❌ У вас нет этого скина!', 'error');
+                return;
+            }
+            activeSkin = id;
+            updateInventory();
+            showMessage(`⭐ Выбран скин ${skinsData.find(s => s.id === id).icon} ${skinsData.find(s => s.id === id).name}!`, 'success');
+        }
+
+        function selectPet(id) {
+            if (!ownedPets.some(p => p.id === id)) {
+                showMessage('❌ У вас нет этого питомца!', 'error');
+                return;
+            }
+            activePet = id;
+            updateInventory();
+            showMessage(`⭐ Выбран питомец ${petsData.find(p => p.id === id).icon} ${petsData.find(p => p.id === id).name}!`, 'success');
+        }
+
+        // --- Вкладки ---
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+
+                const tab = this.dataset.tab;
+                document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+                document.getElementById(`tab-${tab}`).classList.add('active');
+            });
+        });
+
+        // --- Частицы ---
+        const canvas = document.getElementById('particles-canvas');
+        const ctx = canvas.getContext('2d');
+        let width, height, particles = [];
+
+        function resizeCanvas() {
+            width = window.innerWidth;
+            height = window.innerHeight;
+            canvas.width = width;
+            canvas.height = height;
+        }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        class Particle {
+            constructor() {
+                this.reset();
+            }
+            reset() {
+                this.x = Math.random() * width;
+                this.y = Math.random() * height;
+                this.size = Math.random() * 2 + 0.5;
+                this.speedX = (Math.random() - 0.5) * 0.3;
+                this.speedY = (Math.random() - 0.5) * 0.3 - 0.1;
+                this.opacity = Math.random() * 0.6 + 0.2;
+                this.shimmer = Math.random() * Math.PI * 2;
+            }
+            update() {
+                this.x += this.speedX;
+                this.y += this.speedY;
+                this.shimmer += 0.02;
+                if (this.x < 0 || this.x > width || this.y < 0 || this.y > height) this.reset();
+                this.currentOpacity = this.opacity * (0.7 + 0.3 * Math.sin(this.shimmer));
+            }
+            draw() {
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fillStyle = `rgba(212, 175, 55, ${this.currentOpacity * 0.6})`;
+                ctx.fill();
+            }
+        }
+
+        for (let i = 0; i < 70; i++) particles.push(new Particle());
+
+        function animateParticles() {
+            ctx.clearRect(0, 0, width, height);
+            particles.forEach(p => { p.update(); p.draw(); });
+            requestAnimationFrame(animateParticles);
+        }
+        animateParticles();
+
+        // --- Инициализация ---
+        updateMoney();
+        updateInventory();
+
+        // Делаем функции глобальными для HTML
+        window.buySkin = buySkin;
+        window.buyPet = buyPet;
+        window.buyIngredient = buyIngredient;
+        window.buyArtifact = buyArtifact;
+        window.selectSkin = selectSkin;
+        window.selectPet = selectPet;
+
+        window.addEventListener('storage', function(e) {
+            if (e.key === 'magicMoney') {
+                money = parseInt(e.newValue) || 4000;
+                updateMoney();
+            }
+            if (e.key === 'magicInventory') {
+                inventory = JSON.parse(e.newValue) || [];
+                updateInventory();
+            }
+            if (e.key === 'ownedSkins') {
+                ownedSkins = JSON.parse(e.newValue) || [];
+                updateInventory();
+            }
+            if (e.key === 'ownedPets') {
+                ownedPets = JSON.parse(e.newValue) || [];
+                updateInventory();
+            }
+            if (e.key === 'activeSkin') {
+                activeSkin = e.newValue;
+                updateInventory();
+            }
+            if (e.key === 'activePet') {
+                activePet = e.newValue;
+                updateInventory();
+            }
+        });
+    </script>
+</body>
+</html>

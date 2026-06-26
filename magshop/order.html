@@ -1,0 +1,969 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>📦 Заказ — Свиток.Доставка</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Montserrat:wght@300;500;700&display=swap');
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background-color: #0c0a0a;
+            background-image: radial-gradient(circle at 10% 20%, #1a1410 0%, #080606 90%);
+            color: #e4dac7;
+            min-height: 100vh;
+            padding: 20px;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        #particles-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        .wrapper {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 30px;
+            background: rgba(20, 15, 12, 0.6);
+            backdrop-filter: blur(3px);
+            border-radius: 48px;
+            border: 1px solid rgba(200, 170, 120, 0.15);
+            box-shadow: 0 20px 80px rgba(0, 0, 0, 0.8);
+            position: relative;
+            z-index: 10;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 25px;
+            border-bottom: 1px solid rgba(200, 170, 120, 0.15);
+            padding-bottom: 20px;
+        }
+
+        .logo {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 2rem;
+            font-weight: 600;
+            letter-spacing: 4px;
+            color: #f3e5c8;
+            text-decoration: none;
+        }
+        .logo span { color: #b89a7a; }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .money {
+            background: rgba(212, 175, 55, 0.08);
+            padding: 6px 16px;
+            border-radius: 40px;
+            border: 1px solid rgba(212, 175, 55, 0.15);
+            color: #d4af37;
+            font-weight: 700;
+            font-size: 0.95rem;
+        }
+        .money::before { content: "🪙 "; }
+
+        .btn-back {
+            padding: 6px 14px;
+            border-radius: 40px;
+            border: 1px solid rgba(200, 170, 120, 0.2);
+            background: rgba(255, 215, 150, 0.03);
+            color: #b3a390;
+            text-decoration: none;
+            font-size: 0.65rem;
+            letter-spacing: 2px;
+            transition: all 0.3s;
+        }
+        .btn-back:hover {
+            background: rgba(212, 175, 55, 0.12);
+            border-color: rgba(212, 175, 55, 0.4);
+            color: #d4af37;
+        }
+
+        .page-title {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 2.5rem;
+            text-align: center;
+            margin-bottom: 8px;
+            color: #efe6d3;
+        }
+        .page-title small {
+            display: block;
+            font-size: 0.95rem;
+            color: #7f7364;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 300;
+            letter-spacing: 2px;
+        }
+
+        .order-form {
+            margin: 20px 0;
+        }
+
+        .form-group {
+            margin-bottom: 18px;
+        }
+        .form-group label {
+            display: block;
+            font-size: 0.8rem;
+            letter-spacing: 2px;
+            color: #9a8b7a;
+            margin-bottom: 6px;
+            text-transform: uppercase;
+        }
+        .form-group input, .form-group select, .form-group textarea {
+            width: 100%;
+            padding: 14px 20px;
+            background: rgba(10, 8, 6, 0.7);
+            border: 1px solid rgba(200, 170, 120, 0.12);
+            border-radius: 60px;
+            color: #f0e4d0;
+            font-size: 0.95rem;
+            font-family: 'Montserrat', sans-serif;
+            outline: none;
+            transition: all 0.4s;
+        }
+        .form-group textarea {
+            border-radius: 30px;
+            min-height: 70px;
+            resize: vertical;
+        }
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+            border-color: #d4af37;
+            background: rgba(20, 15, 10, 0.9);
+            box-shadow: 0 0 25px rgba(212, 175, 55, 0.06);
+            animation: borderGlow 2s infinite alternate;
+        }
+        @keyframes borderGlow {
+            0% { border-color: rgba(212, 175, 55, 0.2); }
+            100% { border-color: rgba(212, 175, 55, 0.7); }
+        }
+        .form-group select option {
+            background: #1a1410;
+            color: #f0e4d0;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        @media (max-width: 500px) {
+            .form-row { grid-template-columns: 1fr; }
+        }
+
+        .btn-submit {
+            width: 100%;
+            padding: 18px;
+            background: linear-gradient(145deg, #1f1814, #0e0b09);
+            border: 1px solid #d4af37;
+            border-radius: 60px;
+            color: #f3e5c8;
+            font-weight: 700;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.6);
+            font-family: 'Montserrat', sans-serif;
+            position: relative;
+            overflow: hidden;
+            margin-top: 10px;
+        }
+        .btn-submit:hover {
+            background: linear-gradient(145deg, #2a201a, #14100d);
+            color: #fff6e0;
+            box-shadow: 0 0 40px rgba(212, 175, 55, 0.1);
+            transform: scale(1.01);
+        }
+        .btn-submit::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: conic-gradient(from 0deg, transparent, rgba(212,175,55,0.03), transparent, rgba(212,175,55,0.06), transparent);
+            animation: rotateBg 6s linear infinite;
+        }
+        @keyframes rotateBg {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .btn-submit:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .message {
+            text-align: center;
+            padding: 12px;
+            border-radius: 40px;
+            margin: 15px 0;
+            display: none;
+        }
+        .message.success {
+            display: block;
+            background: rgba(100, 200, 100, 0.08);
+            border: 1px solid rgba(100, 200, 100, 0.2);
+            color: #7bc77b;
+        }
+        .message.error {
+            display: block;
+            background: rgba(200, 80, 60, 0.08);
+            border: 1px solid rgba(200, 80, 60, 0.15);
+            color: #c47a6a;
+        }
+
+        .order-summary {
+            background: rgba(0,0,0,0.2);
+            border-radius: 30px;
+            padding: 20px;
+            margin: 15px 0;
+            display: none;
+        }
+        .order-summary.show { display: block; }
+        .order-summary .item {
+            display: flex;
+            justify-content: space-between;
+            padding: 5px 0;
+            border-bottom: 1px solid rgba(200, 170, 120, 0.05);
+        }
+        .order-summary .total {
+            font-weight: 700;
+            color: #d4af37;
+            font-size: 1.2rem;
+            margin-top: 10px;
+            padding-top: 10px;
+            border-top: 2px solid rgba(212, 175, 55, 0.1);
+        }
+
+        /* --- КУРЬЕР-ДОМОВОЙ --- */
+        .courier-section {
+            margin-top: 30px;
+            padding-top: 25px;
+            border-top: 2px solid rgba(212, 175, 55, 0.1);
+            display: none;
+        }
+        .courier-section.active {
+            display: block;
+        }
+
+        .courier-section h3 {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.6rem;
+            color: #d4c4ae;
+            text-align: center;
+            margin-bottom: 15px;
+        }
+
+        .courier-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+            padding: 20px;
+            background: rgba(0,0,0,0.3);
+            border-radius: 30px;
+            border: 1px solid rgba(200, 170, 120, 0.05);
+            min-height: 200px;
+            position: relative;
+        }
+
+        .courier-scene {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            position: relative;
+        }
+
+        /* Дом */
+        .house {
+            font-size: 4rem;
+            position: relative;
+            animation: houseGlow 2s infinite alternate;
+        }
+        @keyframes houseGlow {
+            0% { filter: drop-shadow(0 0 5px rgba(212, 175, 55, 0.2)); }
+            100% { filter: drop-shadow(0 0 20px rgba(212, 175, 55, 0.5)); }
+        }
+
+        .door {
+            position: absolute;
+            bottom: 8px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 2.5rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            background: rgba(0,0,0,0.5);
+            border-radius: 10px;
+            padding: 5px 15px;
+            border: 2px solid rgba(200, 170, 120, 0.1);
+        }
+        .door:hover {
+            transform: translateX(-50%) scale(1.1);
+            border-color: rgba(212, 175, 55, 0.3);
+        }
+        .door.knock {
+            animation: knock 0.5s 3;
+        }
+        @keyframes knock {
+            0%, 100% { transform: translateX(-50%) scale(1); }
+            30% { transform: translateX(-50%) scale(1.2) rotate(-5deg); }
+            60% { transform: translateX(-50%) scale(1.1) rotate(5deg); }
+        }
+
+        /* Колдун-курьер */
+        .courier-wizard {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
+            margin-top: 10px;
+            cursor: pointer;
+            transition: all 0.5s ease;
+            padding: 10px 20px;
+            border-radius: 30px;
+            background: rgba(212, 175, 55, 0.03);
+            border: 2px solid rgba(212, 175, 55, 0);
+            position: relative;
+        }
+        .courier-wizard:hover {
+            border-color: rgba(212, 175, 55, 0.15);
+            background: rgba(212, 175, 55, 0.05);
+        }
+        .courier-wizard .wizard-icon {
+            font-size: 4rem;
+            transition: all 0.3s;
+            animation: floatWizard 3s infinite ease-in-out;
+        }
+        @keyframes floatWizard {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-8px); }
+        }
+        .courier-wizard .package {
+            font-size: 2.5rem;
+            transition: all 0.5s;
+            animation: floatPackage 2s infinite ease-in-out;
+        }
+        @keyframes floatPackage {
+            0%, 100% { transform: translateY(0) rotate(-3deg); }
+            50% { transform: translateY(-5px) rotate(3deg); }
+        }
+        .courier-wizard .status-text {
+            font-size: 0.85rem;
+            color: #9a8a78;
+            letter-spacing: 2px;
+            margin-top: 5px;
+        }
+        .courier-wizard .status-text.delivering {
+            color: #d4af37;
+            animation: pulseText 1s infinite;
+        }
+        @keyframes pulseText {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        .courier-wizard .status-text.delivered {
+            color: #7bc77b;
+        }
+
+        .courier-wizard .timer {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #d4af37;
+            background: rgba(0,0,0,0.3);
+            padding: 4px 16px;
+            border-radius: 40px;
+            border: 1px solid rgba(212, 175, 55, 0.1);
+        }
+
+        /* Посылка открывается */
+        .package-open {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            padding: 20px;
+            background: rgba(0,0,0,0.3);
+            border-radius: 30px;
+            animation: openPackage 0.8s ease;
+            width: 100%;
+        }
+        .package-open.active {
+            display: flex;
+        }
+        @keyframes openPackage {
+            0% { transform: scale(0.5) rotate(-10deg); opacity: 0; }
+            60% { transform: scale(1.1) rotate(2deg); opacity: 1; }
+            100% { transform: scale(1) rotate(0deg); }
+        }
+
+        .package-open .item-display {
+            font-size: 5rem;
+            animation: itemAppear 0.8s ease;
+        }
+        @keyframes itemAppear {
+            0% { transform: scale(0) rotate(-30deg); }
+            60% { transform: scale(1.3) rotate(5deg); }
+            100% { transform: scale(1) rotate(0deg); }
+        }
+        .package-open .item-name {
+            font-size: 1.4rem;
+            font-family: 'Cormorant Garamond', serif;
+            color: #f0e4d0;
+        }
+        .package-open .item-price {
+            color: #d4af37;
+            font-size: 1rem;
+        }
+
+        .courier-wizard .sparkles {
+            position: absolute;
+            font-size: 1rem;
+            animation: sparkleFloat 2s infinite;
+        }
+        @keyframes sparkleFloat {
+            0%, 100% { opacity: 0; transform: translateY(0); }
+            50% { opacity: 1; transform: translateY(-20px); }
+        }
+
+        @media (max-width: 600px) {
+            .wrapper { padding: 20px; border-radius: 32px; }
+            .header { flex-direction: column; align-items: flex-start; }
+            .header-right { width: 100%; justify-content: space-between; }
+            .page-title { font-size: 2rem; }
+            .courier-wizard .wizard-icon { font-size: 3rem; }
+            .courier-wizard .package { font-size: 2rem; }
+            .package-open .item-display { font-size: 3.5rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <canvas id="particles-canvas"></canvas>
+
+    <div class="wrapper">
+        <header class="header">
+            <a href="index.html" class="logo">✦ Свиток <span>заказ</span></a>
+            <div class="header-right">
+                <span class="money" id="moneyDisplay">4 000</span>
+                <a href="index.html" class="btn-back">← Главная</a>
+                <a href="shop.html" class="btn-back">🛒 Магазин</a>
+                <a href="battle.html" class="btn-back" style="border-color:rgba(255,100,100,0.2); color:#e89080;">⚔️ Битва</a>
+            </div>
+        </header>
+
+        <h1 class="page-title">
+            📦 Оформить заказ
+            <small>Магия доставит ваш заказ в Боровичи за 30 минут</small>
+        </h1>
+
+        <div id="message" class="message"></div>
+
+        <form class="order-form" id="orderForm" onsubmit="return false;">
+            <div class="form-row">
+                <div class="form-group">
+                    <label>🧙 Ваше имя</label>
+                    <input type="text" placeholder="Александр" id="orderName" required>
+                </div>
+                <div class="form-group">
+                    <label>📧 Email</label>
+                    <input type="email" placeholder="mag@borovichi.ru" id="orderEmail">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>📍 Адрес доставки (Боровичи)</label>
+                <input type="text" placeholder="Улица, дом, квартира" id="orderAddress" required>
+            </div>
+
+            <div class="form-group">
+                <label>📦 Товар</label>
+                <select id="orderItem">
+                    <option value="Палочка берёзовая|450">🪄 Палочка берёзовая — 450 ₽</option>
+                    <option value="Жезл громовержца|890">⚡ Жезл громовержца — 890 ₽</option>
+                    <option value="Посох друида|1250">🌿 Посох друида — 1 250 ₽</option>
+                    <option value="Жезл света|720">✨ Жезл света — 720 ₽</option>
+                    <option value="Эликсир бодрости|250">🧪 Эликсир бодрости — 250 ₽</option>
+                    <option value="Зелье ночного зрения|380">💜 Зелье ночного зрения — 380 ₽</option>
+                    <option value="Эликсир удачи|420">🧡 Эликсир удачи — 420 ₽</option>
+                    <option value="Настой забвения|310">💚 Настой забвения — 310 ₽</option>
+                    <option value="Шар видений|1200">🔮 Шар видений — 1 200 ₽</option>
+                    <option value="Зеркало времени|2150">🪞 Зеркало времени — 2 150 ₽</option>
+                    <option value="Амулет защиты|680">💎 Амулет защиты — 680 ₽</option>
+                    <option value="Вечный уголь|540">🔥 Вечный уголь — 540 ₽</option>
+                    <option value="Свиток ветра|350">📜 Свиток ветра — 350 ₽</option>
+                    <option value="Гримуар трав|980">📖 Гримуар трав — 980 ₽</option>
+                    <option value="Карта сокровищ|760">🗺️ Карта сокровищ — 760 ₽</option>
+                    <option value="Чётки предсказаний|550">📿 Чётки предсказаний — 550 ₽</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>📝 Примечания для курьера-домового</label>
+                <textarea placeholder="Например: положить под коврик, позвонить трижды..." id="orderNote"></textarea>
+            </div>
+
+            <div id="orderSummary" class="order-summary"></div>
+
+            <button type="submit" class="btn-submit" id="submitBtn">🔮 Отправить заказ</button>
+        </form>
+
+        <!-- ============================================ -->
+        <!-- КУРЬЕР-ДОМОВОЙ -->
+        <!-- ============================================ -->
+        <div class="courier-section" id="courierSection">
+            <h3>🧙 Курьер-домовой уже в пути!</h3>
+            <div class="courier-container" id="courierContainer">
+                <div class="courier-scene" id="courierScene">
+                    <!-- Дом -->
+                    <div class="house" id="houseDisplay">
+                        🏠
+                        <div class="door" id="doorBtn">🚪</div>
+                    </div>
+
+                    <!-- Колдун-курьер -->
+                    <div class="courier-wizard" id="courierWizard">
+                        <div class="wizard-icon" id="wizardIcon">🧙</div>
+                        <div class="package" id="packageIcon">📦</div>
+                        <div class="status-text delivering" id="statusText">⏳ Доставка через 30 сек...</div>
+                        <div class="timer" id="timerDisplay">30с</div>
+                        <div class="sparkles" id="sparkles">✨</div>
+                    </div>
+
+                    <!-- Открытая посылка -->
+                    <div class="package-open" id="packageOpen">
+                        <div class="item-display" id="itemDisplay">🎁</div>
+                        <div class="item-name" id="itemName">Предмет</div>
+                        <div class="item-price" id="itemPrice">0 ₽</div>
+                        <div style="color:#7bc77b; font-size:0.9rem;">✅ Доставлено!</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ============================================
+        // ЗАКАЗ С КУРЬЕРОМ-ДОМОВЫМ
+        // ============================================
+
+        // --- Цены товаров ---
+        const itemPrices = {
+            'Палочка берёзовая': 450,
+            'Жезл громовержца': 890,
+            'Посох друида': 1250,
+            'Жезл света': 720,
+            'Эликсир бодрости': 250,
+            'Зелье ночного зрения': 380,
+            'Эликсир удачи': 420,
+            'Настой забвения': 310,
+            'Шар видений': 1200,
+            'Зеркало времени': 2150,
+            'Амулет защиты': 680,
+            'Вечный уголь': 540,
+            'Свиток ветра': 350,
+            'Гримуар трав': 980,
+            'Карта сокровищ': 760,
+            'Чётки предсказаний': 550
+        };
+
+        // --- Иконки товаров ---
+        const itemIcons = {
+            'Палочка берёзовая': '🪄',
+            'Жезл громовержца': '⚡',
+            'Посох друида': '🌿',
+            'Жезл света': '✨',
+            'Эликсир бодрости': '🧪',
+            'Зелье ночного зрения': '💜',
+            'Эликсир удачи': '🧡',
+            'Настой забвения': '💚',
+            'Шар видений': '🔮',
+            'Зеркало времени': '🪞',
+            'Амулет защиты': '💎',
+            'Вечный уголь': '🔥',
+            'Свиток ветра': '📜',
+            'Гримуар трав': '📖',
+            'Карта сокровищ': '🗺️',
+            'Чётки предсказаний': '📿'
+        };
+
+        let money = parseInt(localStorage.getItem('magicMoney')) || 4000;
+        const moneyDisplay = document.getElementById('moneyDisplay');
+        const orderForm = document.getElementById('orderForm');
+        const orderItem = document.getElementById('orderItem');
+        const orderName = document.getElementById('orderName');
+        const orderAddress = document.getElementById('orderAddress');
+        const orderEmail = document.getElementById('orderEmail');
+        const orderNote = document.getElementById('orderNote');
+        const orderSummary = document.getElementById('orderSummary');
+        const messageDiv = document.getElementById('message');
+        const submitBtn = document.getElementById('submitBtn');
+
+        // --- Курьер ---
+        const courierSection = document.getElementById('courierSection');
+        const courierWizard = document.getElementById('courierWizard');
+        const wizardIcon = document.getElementById('wizardIcon');
+        const packageIcon = document.getElementById('packageIcon');
+        const statusText = document.getElementById('statusText');
+        const timerDisplay = document.getElementById('timerDisplay');
+        const doorBtn = document.getElementById('doorBtn');
+        const packageOpen = document.getElementById('packageOpen');
+        const itemDisplay = document.getElementById('itemDisplay');
+        const itemName = document.getElementById('itemName');
+        const itemPrice = document.getElementById('itemPrice');
+        const sparkles = document.getElementById('sparkles');
+
+        let deliveryTimer = null;
+        let isDelivering = false;
+        let isDelivered = false;
+        let currentOrderItem = '';
+
+        function updateMoney() {
+            moneyDisplay.textContent = money.toLocaleString('ru-RU');
+            localStorage.setItem('magicMoney', money.toString());
+        }
+        updateMoney();
+
+        function showMessage(text, type = 'success') {
+            messageDiv.textContent = text;
+            messageDiv.className = `message ${type}`;
+            messageDiv.style.display = 'block';
+            setTimeout(() => {
+                messageDiv.style.display = 'none';
+            }, 4000);
+        }
+
+        // Обновление суммы заказа
+        orderItem.addEventListener('change', function() {
+            const [item, price] = this.value.split('|');
+            orderSummary.innerHTML = `
+                <div class="item"><span>${item}</span><span>${parseInt(price)} ₽</span></div>
+                <div class="total">Итого: ${parseInt(price)} ₽</div>
+            `;
+            orderSummary.classList.add('show');
+        });
+        orderItem.dispatchEvent(new Event('change'));
+
+        // ============================================
+        // ОТПРАВКА ЗАКАЗА
+        // ============================================
+        submitBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+
+            const name = orderName.value.trim();
+            const address = orderAddress.value.trim();
+            const [item, priceStr] = orderItem.value.split('|');
+            const price = parseInt(priceStr);
+            const email = orderEmail.value.trim();
+            const note = orderNote.value.trim();
+
+            if (!name) {
+                showMessage('❓ Укажите ваше имя, маг!', 'error');
+                return;
+            }
+            if (!address) {
+                showMessage('❓ Укажите адрес в Боровичах!', 'error');
+                return;
+            }
+
+            if (money < price) {
+                showMessage(`❌ Недостаточно средств! Нужно ${price} ₽. У вас ${money} ₽.`, 'error');
+                return;
+            }
+
+            // Списываем деньги
+            money -= price;
+            updateMoney();
+
+            // Сохраняем заказ
+            const orders = JSON.parse(localStorage.getItem('orderHistory')) || [];
+            orders.push({
+                date: new Date().toLocaleString(),
+                name,
+                address,
+                item,
+                price,
+                email,
+                note,
+                status: 'Доставляется'
+            });
+            localStorage.setItem('orderHistory', JSON.stringify(orders));
+
+            showMessage(`🔮 Заказ "${item}" для ${name} принят! Курьер-домовой уже в пути.`, 'success');
+
+            // --- ЗАПУСКАЕМ КУРЬЕРА ---
+            startDelivery(item, price);
+
+            // Очищаем поле заметки
+            orderNote.value = '';
+        });
+
+        // ============================================
+        // КУРЬЕР-ДОМОВОЙ
+        // ============================================
+        function startDelivery(item, price) {
+            currentOrderItem = item;
+            isDelivering = true;
+            isDelivered = false;
+
+            // Показываем секцию
+            courierSection.classList.add('active');
+            courierWizard.style.display = 'flex';
+            packageOpen.classList.remove('active');
+            packageOpen.style.display = 'none';
+
+            // Сбрасываем состояние
+            wizardIcon.textContent = '🧙';
+            packageIcon.textContent = '📦';
+            statusText.textContent = '⏳ Доставка через 30 сек...';
+            statusText.className = 'status-text delivering';
+            doorBtn.classList.remove('knock');
+            sparkles.style.display = 'none';
+
+            // Отключаем кнопку заказа
+            submitBtn.disabled = true;
+
+            let timeLeft = 30;
+            timerDisplay.textContent = `${timeLeft}с`;
+
+            // Анимация колдуна
+            let sparkleInterval = setInterval(() => {
+                sparkles.style.display = 'block';
+                sparkles.style.left = Math.random() * 80 + 10 + '%';
+                sparkles.style.top = Math.random() * 60 + 20 + '%';
+                setTimeout(() => {
+                    sparkles.style.display = 'none';
+                }, 300);
+            }, 500);
+
+            deliveryTimer = setInterval(() => {
+                timeLeft--;
+                timerDisplay.textContent = `${timeLeft}с`;
+
+                // Обновляем статус
+                if (timeLeft > 15) {
+                    statusText.textContent = '🚀 Курьер летит к вам...';
+                } else if (timeLeft > 5) {
+                    statusText.textContent = '🪄 Почти у двери!';
+                } else if (timeLeft > 0) {
+                    statusText.textContent = '🔔 Сейчас постучит!';
+                }
+
+                if (timeLeft <= 0) {
+                    clearInterval(deliveryTimer);
+                    clearInterval(sparkleInterval);
+                    // ДОСТАВЛЕН!
+                    deliverPackage();
+                }
+            }, 1000);
+        }
+
+        function deliverPackage() {
+            isDelivering = false;
+            isDelivered = true;
+
+            // Колдун стучится
+            statusText.textContent = '🔔 Тук-тук-тук!';
+            statusText.className = 'status-text';
+            timerDisplay.textContent = '✅';
+
+            // Анимация стука в дверь
+            doorBtn.classList.add('knock');
+
+            // Подсветка двери
+            setTimeout(() => {
+                doorBtn.classList.remove('knock');
+                // Меняем состояние колдуна — он протягивает посылку
+                wizardIcon.textContent = '🧙‍♂️';
+                packageIcon.textContent = '📦➡️';
+                statusText.textContent = '👆 Нажмите на колдуна, чтобы забрать посылку!';
+                statusText.className = 'status-text delivered';
+
+                // Делаем колдуна кликабельным
+                courierWizard.style.cursor = 'pointer';
+                courierWizard.style.borderColor = 'rgba(212, 175, 55, 0.3)';
+
+                showMessage('🔔 Курьер-домовой у двери! Нажмите на него!', 'success');
+
+                // Анимация свечения
+                wizardIcon.style.animation = 'floatWizard 1s infinite ease-in-out';
+
+            }, 1500);
+        }
+
+        // ============================================
+        // КЛИК НА КОЛДУНА — ЗАБИРАЕМ ПОСЫЛКУ
+        // ============================================
+        courierWizard.addEventListener('click', function(e) {
+            if (!isDelivered || isDelivering) return;
+
+            // Открываем посылку!
+            openPackage();
+        });
+
+        // Также клик на дверь
+        doorBtn.addEventListener('click', function() {
+            if (!isDelivered || isDelivering) return;
+            openPackage();
+        });
+
+        function openPackage() {
+            if (packageOpen.classList.contains('active')) return;
+
+            // Скрываем колдуна с посылкой
+            courierWizard.style.display = 'none';
+
+            // Показываем открытую посылку
+            packageOpen.style.display = 'flex';
+            packageOpen.classList.add('active');
+
+            // Показываем предмет
+            const icon = itemIcons[currentOrderItem] || '🎁';
+            const price = itemPrices[currentOrderItem] || 0;
+
+            itemDisplay.textContent = icon;
+            itemName.textContent = currentOrderItem;
+            itemPrice.textContent = `${price} ₽`;
+
+            // Добавляем в инвентарь (localStorage)
+            const inventory = JSON.parse(localStorage.getItem('magicInventory')) || [];
+            // Проверяем, есть ли уже
+            const exists = inventory.some(i => i.name === currentOrderItem);
+            if (!exists) {
+                const itemId = currentOrderItem.toLowerCase().replace(/\s/g, '');
+                inventory.push({
+                    id: itemId,
+                    name: currentOrderItem,
+                    icon: icon,
+                    price: price
+                });
+                localStorage.setItem('magicInventory', JSON.stringify(inventory));
+                showMessage(`🎉 Вы получили ${icon} ${currentOrderItem}!`, 'success');
+            } else {
+                showMessage(`📦 ${currentOrderItem} уже есть в инвентаре!`, 'info');
+            }
+
+            // Анимация конфетти
+            for (let i = 0; i < 20; i++) {
+                setTimeout(() => {
+                    const confetti = document.createElement('div');
+                    confetti.textContent = ['✨', '⭐', '🌟', '💫', '🎉'][Math.floor(Math.random() * 5)];
+                    confetti.style.cssText = `
+                        position: fixed;
+                        font-size: ${1 + Math.random() * 2}rem;
+                        left: ${Math.random() * 100}vw;
+                        top: -20px;
+                        pointer-events: none;
+                        z-index: 999;
+                        animation: confettiFall ${1.5 + Math.random() * 2}s ease-in forwards;
+                    `;
+                    document.body.appendChild(confetti);
+                    setTimeout(() => confetti.remove(), 3000);
+                }, i * 50);
+            }
+
+            // Добавляем стиль для конфетти
+            const style = document.createElement('style');
+            style.textContent = `
+                @keyframes confettiFall {
+                    0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+                    100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
+                }
+            `;
+            document.head.appendChild(style);
+
+            // Включаем кнопку заказа
+            submitBtn.disabled = false;
+
+            // Обновляем отображение инвентаря на других страницах
+            window.dispatchEvent(new Event('storage'));
+        }
+
+        // ============================================
+        // ЧАСТИЦЫ (фон)
+        // ============================================
+        const canvas = document.getElementById('particles-canvas');
+        const ctx = canvas.getContext('2d');
+        let width, height, particles = [];
+
+        function resizeCanvas() {
+            width = window.innerWidth;
+            height = window.innerHeight;
+            canvas.width = width;
+            canvas.height = height;
+        }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        class Particle {
+            constructor() {
+                this.reset();
+            }
+            reset() {
+                this.x = Math.random() * width;
+                this.y = Math.random() * height;
+                this.size = Math.random() * 2 + 0.5;
+                this.speedX = (Math.random() - 0.5) * 0.3;
+                this.speedY = (Math.random() - 0.5) * 0.3 - 0.1;
+                this.opacity = Math.random() * 0.6 + 0.2;
+                this.shimmer = Math.random() * Math.PI * 2;
+            }
+            update() {
+                this.x += this.speedX;
+                this.y += this.speedY;
+                this.shimmer += 0.02;
+                if (this.x < 0 || this.x > width || this.y < 0 || this.y > height) this.reset();
+                this.currentOpacity = this.opacity * (0.7 + 0.3 * Math.sin(this.shimmer));
+            }
+            draw() {
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fillStyle = `rgba(212, 175, 55, ${this.currentOpacity * 0.6})`;
+                ctx.fill();
+            }
+        }
+
+        for (let i = 0; i < 70; i++) particles.push(new Particle());
+
+        function animateParticles() {
+            ctx.clearRect(0, 0, width, height);
+            particles.forEach(p => { p.update(); p.draw(); });
+            requestAnimationFrame(animateParticles);
+        }
+        animateParticles();
+
+        // Синхронизация
+        window.addEventListener('storage', function(e) {
+            if (e.key === 'magicMoney') {
+                money = parseInt(e.newValue) || 4000;
+                updateMoney();
+            }
+        });
+    </script>
+</body>
+</html>

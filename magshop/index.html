@@ -1,0 +1,662 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>✦ Свиток.Доставка — Боровичи</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Montserrat:wght@300;500;700&display=swap');
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background-color: #0c0a0a;
+            background-image: radial-gradient(circle at 10% 20%, #1a1410 0%, #080606 90%);
+            color: #e4dac7;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        .magic-wrapper {
+            max-width: 1350px;
+            width: 100%;
+            padding: 30px;
+            background: rgba(20, 15, 12, 0.6);
+            backdrop-filter: blur(3px);
+            border-radius: 64px 64px 32px 32px;
+            border: 1px solid rgba(200, 170, 120, 0.15);
+            box-shadow: 0 20px 80px rgba(0, 0, 0, 0.8);
+            position: relative;
+            z-index: 10;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            margin-bottom: 25px;
+            border-bottom: 1px solid rgba(200, 170, 120, 0.2);
+            padding-bottom: 20px;
+            gap: 15px;
+        }
+
+        .logo {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 2.2rem;
+            font-weight: 600;
+            letter-spacing: 6px;
+            text-transform: uppercase;
+            color: #f3e5c8;
+            text-shadow: 0 0 15px rgba(200, 150, 80, 0.3);
+        }
+        .logo span { color: #b89a7a; font-weight: 300; }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .city-badge {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            color: #9a8b7a;
+            background: rgba(255, 215, 150, 0.05);
+            padding: 5px 14px;
+            border-radius: 40px;
+            border: 1px solid rgba(200, 170, 120, 0.2);
+        }
+
+        .money-counter {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            background: rgba(212, 175, 55, 0.08);
+            padding: 5px 14px;
+            border-radius: 40px;
+            border: 1px solid rgba(212, 175, 55, 0.15);
+            font-weight: 700;
+            color: #d4af37;
+            font-size: 0.95rem;
+        }
+        .money-counter::before { content: "🪙"; }
+
+        .btn-nav {
+            padding: 6px 14px;
+            border-radius: 40px;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 500;
+            font-size: 0.65rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(200, 170, 120, 0.15);
+            background: rgba(255, 215, 150, 0.03);
+            color: #b3a390;
+        }
+        .btn-nav:hover {
+            background: rgba(212, 175, 55, 0.12);
+            border-color: rgba(212, 175, 55, 0.4);
+            color: #d4af37;
+            transform: translateY(-2px);
+        }
+        .btn-nav-primary {
+            background: rgba(212, 175, 55, 0.08);
+            border-color: rgba(212, 175, 55, 0.2);
+            color: #d4af37;
+        }
+        .btn-nav-primary:hover { background: rgba(212, 175, 55, 0.18); border-color: rgba(212, 175, 55, 0.5); }
+        .btn-nav-success {
+            background: rgba(100, 200, 100, 0.06);
+            border-color: rgba(100, 200, 100, 0.15);
+            color: #7bc77b;
+        }
+        .btn-nav-success:hover { background: rgba(100, 200, 100, 0.15); border-color: rgba(100, 200, 100, 0.35); }
+        .btn-nav-workshop {
+            background: rgba(200, 150, 255, 0.06);
+            border-color: rgba(200, 150, 255, 0.15);
+            color: #b89ad4;
+        }
+        .btn-nav-workshop:hover { background: rgba(200, 150, 255, 0.15); border-color: rgba(200, 150, 255, 0.35); }
+        .btn-nav-battle {
+            background: rgba(255, 100, 100, 0.06);
+            border-color: rgba(255, 100, 100, 0.15);
+            color: #e89080;
+        }
+        .btn-nav-battle:hover { background: rgba(255, 100, 100, 0.15); border-color: rgba(255, 100, 100, 0.35); color: #f0a090; }
+
+        .btn-menu {
+            padding: 6px 14px;
+            border-radius: 40px;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 500;
+            font-size: 0.65rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(200, 170, 120, 0.15);
+            background: rgba(255, 215, 150, 0.03);
+            color: #b3a390;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .btn-menu:hover {
+            background: rgba(212, 175, 55, 0.12);
+            border-color: rgba(212, 175, 55, 0.4);
+            color: #d4af37;
+            transform: translateY(-2px);
+        }
+        .btn-menu::after { content: "↓"; animation: bounceArrow 2s infinite; }
+        @keyframes bounceArrow {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(4px); }
+        }
+
+        .hero {
+            text-align: center;
+            margin: 10px 0 30px;
+        }
+        .hero h1 {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: clamp(2.5rem, 8vw, 5rem);
+            font-weight: 400;
+            font-style: italic;
+            color: #efe6d3;
+            text-shadow: 0 0 30px rgba(180, 120, 60, 0.2);
+            line-height: 1.1;
+        }
+        .hero h1 i { font-style: normal; color: #d4af37; position: relative; }
+        .hero h1 i::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            bottom: 5px;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #d4af37, transparent);
+            animation: linePulse 3s infinite;
+        }
+        @keyframes linePulse {
+            0%, 100% { opacity: 0.3; }
+            50% { opacity: 1; }
+        }
+        .hero p {
+            font-weight: 300;
+            color: #b3a390;
+            letter-spacing: 3px;
+            font-size: 1.1rem;
+            margin-top: 10px;
+        }
+
+        .quick-actions {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin: 20px 0 15px;
+        }
+        .quick-actions .btn-action {
+            padding: 10px 22px;
+            border-radius: 60px;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 600;
+            font-size: 0.8rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            text-decoration: none;
+            transition: all 0.4s ease;
+            border: 1px solid rgba(200, 170, 120, 0.15);
+            background: rgba(255, 215, 150, 0.03);
+            color: #b3a390;
+        }
+        .quick-actions .btn-action:hover { transform: translateY(-3px); box-shadow: 0 10px 30px rgba(0,0,0,0.4); }
+        .quick-actions .btn-shop {
+            background: rgba(212, 175, 55, 0.08);
+            border-color: rgba(212, 175, 55, 0.2);
+            color: #d4af37;
+        }
+        .quick-actions .btn-shop:hover { background: rgba(212, 175, 55, 0.18); }
+        .quick-actions .btn-cauldron {
+            background: rgba(100, 200, 100, 0.06);
+            border-color: rgba(100, 200, 100, 0.15);
+            color: #7bc77b;
+        }
+        .quick-actions .btn-cauldron:hover { background: rgba(100, 200, 100, 0.15); }
+        .quick-actions .btn-workshop {
+            background: rgba(200, 150, 255, 0.06);
+            border-color: rgba(200, 150, 255, 0.15);
+            color: #b89ad4;
+        }
+        .quick-actions .btn-workshop:hover { background: rgba(200, 150, 255, 0.15); }
+        .quick-actions .btn-battle {
+            background: rgba(255, 100, 100, 0.06);
+            border-color: rgba(255, 100, 100, 0.15);
+            color: #e89080;
+        }
+        .quick-actions .btn-battle:hover { background: rgba(255, 100, 100, 0.15); }
+        .quick-actions .btn-order {
+            background: rgba(100, 200, 255, 0.06);
+            border-color: rgba(100, 200, 255, 0.15);
+            color: #7bc7d4;
+        }
+        .quick-actions .btn-order:hover { background: rgba(100, 200, 255, 0.15); }
+
+        .menu-section { margin: 25px 0 10px; scroll-margin-top: 30px; }
+        .category-block { margin-bottom: 30px; }
+        .category-title {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.6rem;
+            color: #d4c4ae;
+            margin-bottom: 15px;
+            letter-spacing: 2px;
+            border-left: 3px solid rgba(212, 175, 55, 0.3);
+            padding-left: 18px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .category-title .cat-icon { font-size: 1.4rem; }
+        .category-title small { font-size: 0.75rem; color: #7f7364; font-weight: 300; }
+
+        .items-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 16px;
+        }
+
+        .item-card {
+            background: rgba(26, 20, 16, 0.7);
+            backdrop-filter: blur(2px);
+            border-radius: 24px;
+            padding: 16px 10px 14px;
+            text-align: center;
+            border: 1px solid rgba(200, 170, 120, 0.08);
+            box-shadow: 0 10px 30px -10px rgba(0,0,0,0.6);
+            transition: all 0.4s ease;
+            animation: float 5s ease-in-out infinite;
+            position: relative;
+            cursor: pointer;
+        }
+        .item-card:nth-child(1) { animation-delay: 0s; }
+        .item-card:nth-child(2) { animation-delay: -0.6s; }
+        .item-card:nth-child(3) { animation-delay: -1.2s; }
+        .item-card:nth-child(4) { animation-delay: -0.3s; }
+
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-6px); }
+            100% { transform: translateY(0px); }
+        }
+
+        .item-card:hover {
+            transform: scale(1.04) translateY(-8px);
+            border-color: rgba(212, 175, 55, 0.4);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8), 0 0 30px rgba(212, 175, 55, 0.05);
+            background: rgba(34, 26, 20, 0.85);
+        }
+
+        .item-icon { font-size: 2.4rem; display: block; margin-bottom: 6px; }
+        .item-card h3 { font-family: 'Cormorant Garamond', serif; font-weight: 600; font-size: 1.2rem; color: #f0e4d0; }
+        .item-card .price {
+            display: inline-block;
+            margin-top: 4px;
+            font-weight: 300;
+            background: rgba(212, 175, 55, 0.08);
+            padding: 2px 12px;
+            border-radius: 40px;
+            border: 1px solid rgba(212, 175, 55, 0.12);
+            color: #d4af37;
+            font-size: 0.85rem;
+        }
+        .item-card .desc { font-size: 0.7rem; color: #9a8a78; margin-top: 5px; font-weight: 300; line-height: 1.3; }
+        .item-card .badge-popular {
+            position: absolute;
+            top: 6px;
+            right: 6px;
+            background: rgba(212, 175, 55, 0.12);
+            border: 1px solid rgba(212, 175, 55, 0.15);
+            font-size: 0.45rem;
+            padding: 2px 8px;
+            border-radius: 20px;
+            color: #d4af37;
+        }
+
+        .order-section {
+            margin: 35px 0 20px;
+            padding: 30px 25px;
+            background: rgba(15, 12, 10, 0.5);
+            border-radius: 40px;
+            border: 1px solid rgba(200, 170, 120, 0.1);
+            backdrop-filter: blur(8px);
+        }
+        .order-title {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.8rem;
+            text-align: center;
+            color: #e8dccc;
+            margin-bottom: 20px;
+        }
+        .order-title small {
+            display: block;
+            font-size: 0.85rem;
+            color: #7f7364;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 300;
+            letter-spacing: 2px;
+            margin-top: 5px;
+        }
+        .form-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            justify-content: center;
+        }
+        .form-group { flex: 1 1 180px; position: relative; }
+        .form-group input {
+            width: 100%;
+            padding: 14px 20px;
+            background: rgba(10, 8, 6, 0.7);
+            border: 1px solid rgba(200, 170, 120, 0.15);
+            border-radius: 60px;
+            color: #f0e4d0;
+            font-size: 0.9rem;
+            font-family: 'Montserrat', sans-serif;
+            outline: none;
+            transition: all 0.4s;
+        }
+        .form-group input:focus {
+            border-color: #d4af37;
+            background: rgba(20, 15, 10, 0.9);
+            box-shadow: 0 0 25px rgba(212, 175, 55, 0.08);
+            animation: borderGlow 2s infinite alternate;
+        }
+        @keyframes borderGlow {
+            0% { border-color: rgba(212, 175, 55, 0.3); }
+            100% { border-color: rgba(212, 175, 55, 0.9); }
+        }
+
+        .btn-magic {
+            padding: 14px 40px;
+            background: linear-gradient(145deg, #1f1814, #0e0b09);
+            border: 1px solid #d4af37;
+            border-radius: 60px;
+            color: #f3e5c8;
+            font-weight: 700;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.6);
+            font-family: 'Montserrat', sans-serif;
+            position: relative;
+            overflow: hidden;
+        }
+        .btn-magic:hover {
+            background: linear-gradient(145deg, #2a201a, #14100d);
+            color: #fff6e0;
+            box-shadow: 0 0 40px rgba(212, 175, 55, 0.12);
+            transform: scale(1.02);
+        }
+        .btn-magic::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: conic-gradient(from 0deg, transparent, rgba(212,175,55,0.03), transparent, rgba(212,175,55,0.06), transparent);
+            animation: rotateBg 6s linear infinite;
+        }
+        @keyframes rotateBg {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        #orderStatus {
+            text-align: center;
+            margin-top: 15px;
+            font-weight: 300;
+            letter-spacing: 1px;
+            color: #b89a7a;
+            min-height: 28px;
+        }
+
+        .footer-note {
+            margin-top: 30px;
+            text-align: center;
+            font-size: 0.7rem;
+            color: #4d443a;
+            letter-spacing: 3px;
+            border-top: 1px solid rgba(200, 170, 120, 0.05);
+            padding-top: 20px;
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            flex-wrap: wrap;
+        }
+        .footer-note span { display: inline-flex; align-items: center; gap: 5px; }
+
+        #particles-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        @media (max-width: 700px) {
+            .magic-wrapper { padding: 15px; border-radius: 32px; }
+            .header { flex-direction: column; align-items: flex-start; gap: 10px; }
+            .header-actions { width: 100%; justify-content: space-between; flex-wrap: wrap; }
+            .btn-nav, .btn-menu { font-size: 0.55rem; padding: 4px 10px; }
+            .money-counter { font-size: 0.8rem; padding: 4px 12px; }
+            .city-badge { font-size: 0.6rem; padding: 4px 10px; }
+            .order-section { padding: 18px 15px; }
+            .btn-magic { width: 100%; justify-content: center; }
+            .items-grid { grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); }
+            .quick-actions .btn-action { font-size: 0.65rem; padding: 8px 14px; }
+        }
+        @media (max-width: 450px) {
+            .items-grid { grid-template-columns: repeat(2, 1fr); gap: 8px; }
+            .item-card { padding: 10px 6px 8px; border-radius: 16px; }
+            .item-icon { font-size: 1.8rem; }
+            .item-card h3 { font-size: 0.95rem; }
+            .item-card .desc { font-size: 0.55rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <canvas id="particles-canvas"></canvas>
+
+    <div class="magic-wrapper">
+
+        <header class="header">
+            <div class="logo">✦ Свиток <span>доставки</span></div>
+            <div class="header-actions">
+                <div class="city-badge">Боровичи</div>
+                <div class="money-counter" id="moneyDisplay">4 000</div>
+                <a href="shop.html" class="btn-nav btn-nav-primary">🛒 Магазин</a>
+                <a href="cauldron.html" class="btn-nav btn-nav-success">⚗️ Алхимия</a>
+                <a href="workshop.html" class="btn-nav btn-nav-workshop">🔧 Мастерская</a>
+                <a href="battle.html" class="btn-nav btn-nav-battle">⚔️ Битва</a>
+                <a href="order.html" class="btn-nav">📦 Заказ</a>
+                <a href="login.html" class="btn-nav">🔐 Войти</a>
+            </div>
+        </header>
+
+        <div class="hero">
+            <h1>Магия <i>у порога</i> за час</h1>
+            <p>Доставляем артефакты по всему городу. От Никольской до Торговой.</p>
+        </div>
+
+        <div class="quick-actions">
+            <a href="shop.html" class="btn-action btn-shop">🛒 Купить</a>
+            <a href="cauldron.html" class="btn-action btn-cauldron">⚗️ Алхимия</a>
+            <a href="workshop.html" class="btn-action btn-workshop">🔧 Мастерская</a>
+            <a href="battle.html" class="btn-action btn-battle">⚔️ Битва</a>
+            <a href="order.html" class="btn-action btn-order">📦 Заказать</a>
+        </div>
+
+        <div class="menu-section" id="menu">
+            <div class="category-block">
+                <div class="category-title"><span class="cat-icon">🪄</span> Палочки и жезлы <small>— сила в каждом жесте</small></div>
+                <div class="items-grid">
+                    <div class="item-card"><span class="item-icon">🪄</span><h3>Палочка берёзовая</h3><div class="price">450 ₽</div><div class="desc">Из боровицкой берёзы</div></div>
+                    <div class="item-card"><span class="item-icon">⚡</span><h3>Жезл громовержца</h3><div class="price">890 ₽</div><div class="desc">Высекает искры</div><span class="badge-popular">★ Хит</span></div>
+                    <div class="item-card"><span class="item-icon">🌿</span><h3>Посох друида</h3><div class="price">1 250 ₽</div><div class="desc">Из корня дуба</div></div>
+                    <div class="item-card"><span class="item-icon">✨</span><h3>Жезл света</h3><div class="price">720 ₽</div><div class="desc">Освещает путь</div></div>
+                </div>
+            </div>
+
+            <div class="category-block">
+                <div class="category-title"><span class="cat-icon">🧪</span> Зелья и эликсиры <small>— мудрость трав</small></div>
+                <div class="items-grid">
+                    <div class="item-card"><span class="item-icon">🧪</span><h3>Эликсир бодрости</h3><div class="price">250 ₽</div><div class="desc">Настоян на мёде</div></div>
+                    <div class="item-card"><span class="item-icon">💜</span><h3>Зелье ночного зрения</h3><div class="price">380 ₽</div><div class="desc">С черникой и лунной росой</div></div>
+                    <div class="item-card"><span class="item-icon">🧡</span><h3>Эликсир удачи</h3><div class="price">420 ₽</div><div class="desc">Золотистый с искрами</div><span class="badge-popular">★ Хит</span></div>
+                    <div class="item-card"><span class="item-icon">💚</span><h3>Настой забвения</h3><div class="price">310 ₽</div><div class="desc">Из трав с берегов Мсты</div></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="order-section">
+            <div class="order-title">
+                Призвать доставку
+                <small>Оставьте знак (адрес), и курьер-домовой явится</small>
+            </div>
+            <div class="form-row">
+                <div class="form-group"><input type="text" placeholder="Улица, дом, квартира" id="addressInput"></div>
+                <div class="form-group"><input type="text" placeholder="Что принести?" id="itemInput" value="Палочка берёзовая"></div>
+                <button class="btn-magic" id="orderBtn">Заказать</button>
+            </div>
+            <div id="orderStatus"></div>
+        </div>
+
+        <div class="footer-note">
+            <span>✦ Защищено древней руной</span>
+            <span>⏳ Доставка 30–40 мин</span>
+            <span>📍 Боровичи, Россия</span>
+            <span>⚔️ Победи дракона!</span>
+        </div>
+    </div>
+
+    <script>
+        (function() {
+            const canvas = document.getElementById('particles-canvas');
+            const ctx = canvas.getContext('2d');
+            let width, height, particles = [];
+
+            function resizeCanvas() {
+                width = window.innerWidth;
+                height = window.innerHeight;
+                canvas.width = width;
+                canvas.height = height;
+            }
+            window.addEventListener('resize', resizeCanvas);
+            resizeCanvas();
+
+            class Particle {
+                constructor() {
+                    this.reset();
+                }
+                reset() {
+                    this.x = Math.random() * width;
+                    this.y = Math.random() * height;
+                    this.size = Math.random() * 2.5 + 0.5;
+                    this.speedX = (Math.random() - 0.5) * 0.4;
+                    this.speedY = (Math.random() - 0.5) * 0.4 - 0.1;
+                    this.opacity = Math.random() * 0.7 + 0.2;
+                    this.shimmer = Math.random() * Math.PI * 2;
+                }
+                update() {
+                    this.x += this.speedX;
+                    this.y += this.speedY;
+                    this.shimmer += 0.02;
+                    if (this.x < 0 || this.x > width || this.y < 0 || this.y > height) this.reset();
+                    this.currentOpacity = this.opacity * (0.7 + 0.3 * Math.sin(this.shimmer));
+                }
+                draw() {
+                    ctx.beginPath();
+                    ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                    ctx.fillStyle = `rgba(212, 175, 55, ${this.currentOpacity * 0.7})`;
+                    ctx.fill();
+                    if (this.size > 1.5) { ctx.shadowColor = 'rgba(212, 175, 55, 0.2)'; ctx.shadowBlur = 12; }
+                }
+            }
+
+            for (let i = 0; i < 90; i++) particles.push(new Particle());
+
+            function animateParticles() {
+                ctx.clearRect(0, 0, width, height);
+                particles.forEach(p => { p.update(); p.draw(); });
+                requestAnimationFrame(animateParticles);
+            }
+            animateParticles();
+
+            let money = parseInt(localStorage.getItem('magicMoney')) || 4000;
+            const moneyDisplay = document.getElementById('moneyDisplay');
+
+            function updateMoneyDisplay() {
+                moneyDisplay.textContent = money.toLocaleString('ru-RU');
+                localStorage.setItem('magicMoney', money.toString());
+            }
+            updateMoneyDisplay();
+
+            const orderBtn = document.getElementById('orderBtn');
+            const addressInput = document.getElementById('addressInput');
+            const itemInput = document.getElementById('itemInput');
+            const statusDiv = document.getElementById('orderStatus');
+
+            orderBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                const address = addressInput.value.trim();
+                const item = itemInput.value.trim() || 'магический предмет';
+                if (!address) {
+                    statusDiv.innerHTML = '❓ Укажите адрес, чтобы домовой нашёл вас...';
+                    statusDiv.style.color = '#b89a7a';
+                    return;
+                }
+                const phrases = [
+                    `🔮 Ветер шепчет: доставка "${item}" по адресу "${address}" будет через 33 минуты.`,
+                    `🕯️ Свечи зажжены! Курьер уже в пути. Ждите "${item}" у порога.`,
+                    `✨ Артефакт "${item}" покинул лавку. Скоро будет у "${address}". Берегите его!`,
+                    `📦 Заказ на "${item}" принят. Домовой вылетает. (Боровичи, ${address})`
+                ];
+                statusDiv.innerHTML = phrases[Math.floor(Math.random() * phrases.length)];
+                statusDiv.style.color = '#d4af37';
+                orderBtn.style.transform = 'scale(0.95)';
+                setTimeout(() => { orderBtn.style.transform = ''; }, 150);
+            });
+
+            document.querySelectorAll('.item-card').forEach(card => {
+                card.addEventListener('click', function() {
+                    const name = this.querySelector('h3')?.innerText || 'артефакт';
+                    if (itemInput) {
+                        itemInput.value = name;
+                        statusDiv.innerHTML = `🧙 Вы выбрали "${name}". Укажите адрес для доставки.`;
+                        statusDiv.style.color = '#b89a7a';
+                    }
+                });
+            });
+        })();
+    </script>
+
+</body>
+</html>
